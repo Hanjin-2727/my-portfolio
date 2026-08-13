@@ -604,41 +604,43 @@
         <div class="card-title">📝 어드바이저 도메인 경력 & 프로젝트 등록</div>
         <form id="advisorForm">
           
-          <!-- 1. 전문 분야 선택 (최대 5개) -->
+          <!-- 1. 전문분야/산업분야 선택 (2단계 분류 + 기타 직접입력, 최대 5개) -->
           <div class="form-group full-width">
-            <label for="categorySelect">
-              1. 전문 분야 (Sector) - <span style="color: #60a5fa;" id="categoryCount">최대 5개까지 선택 가능 (0/5)</span><span class="req">*</span>
+            <label for="mainIndustrySelect">
+              1. 전문분야 / 산업분야 (Sector) - <span style="color: #60a5fa;" id="categoryCount">최대 5개까지 선택 가능 (0/5)</span><span class="req">*</span>
             </label>
             
             <div style="display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap;">
-              <select id="categorySelect" style="flex: 1; min-width: 260px;" onchange="handleCategorySelect()">
-                <option value="" disabled selected>전문 분야 선택 (최대 5개)...</option>
-                <option value="Software Engineering">1. Software Engineering (소프트웨어 공학)</option>
-                <option value="Blockchain & Web3">2. Blockchain & Web3 (블록체인/웹3)</option>
-                <option value="Smart Contract Programming">3. Smart Contract Programming</option>
-                <option value="ZK Rollups & Crypto">4. ZK Rollups & Crypto</option>
-                <option value="DAO Systems">5. DAO Systems (다오 시스템)</option>
-                <option value="Lean Startup Methodology">6. Lean Startup Methodology</option>
-                <option value="Venture Capital Investment">7. Venture Capital Investment (VC 투자)</option>
-                <option value="Database Design & Architecture">8. Database Design & Architecture</option>
-                <option value="Private Cloud Networks">9. Private Cloud Networks</option>
-                <option value="Corporate Growth Strategies">10. Corporate Growth Strategies</option>
-                <option value="etc">11. 기타 (직접 입력 추가)</option>
+              <!-- 1차 대분류 선택 -->
+              <select id="mainIndustrySelect" style="flex: 1; min-width: 180px;" onchange="updateSubCategories()">
+                <option value="" disabled selected>1차 대분류 선택...</option>
+                <option value="금융">1. 금융</option>
+                <option value="제조">2. 제조</option>
+                <option value="IT">3. IT</option>
+                <option value="운수업">4. 운수업</option>
+                <option value="농업·어업">5. 농업·어업</option>
+                <option value="기타">6. 기타 (직접 입력)</option>
               </select>
-              <button type="button" class="btn-action-msg" style="white-space: nowrap; padding: 12px 20px;" onclick="addSelectedCategory()">+ 분야 추가</button>
+
+              <!-- 2차 세부 소분류 선택 -->
+              <select id="subIndustrySelect" style="flex: 1; min-width: 180px;" onchange="handleSubCategorySelect()">
+                <option value="" disabled selected>2차 세부분야 선택...</option>
+              </select>
+
+              <button type="button" class="btn-action-msg" style="white-space: nowrap; padding: 12px 20px;" onclick="addCategoryFromSelect()">+ 분야 추가</button>
             </div>
 
-            <!-- Hidden Custom Category Input -->
+            <!-- Hidden Custom Industry Input -->
             <div id="etcCategoryDiv" style="display: none; margin-bottom: 12px;">
               <div style="display: flex; gap: 10px;">
-                <input type="text" id="etcCategoryInput" placeholder="기타 전문 분야명을 직접 입력하세요...">
+                <input type="text" id="etcCategoryInput" placeholder="기타 세부분야명을 직접 입력하세요...">
                 <button type="button" class="btn-action-msg" style="white-space: nowrap;" onclick="addCustomCategory()">직접 추가</button>
               </div>
             </div>
 
             <!-- Selected Category Tag Chips Box -->
             <div id="selectedCategories" style="display: flex; flex-wrap: wrap; gap: 10px; min-height: 48px; padding: 12px; background-color: var(--input-bg); border: 1px solid var(--input-border); border-radius: 8px;">
-              <span style="color: var(--text-muted); font-size: 0.85rem; display: flex; align-items: center;" id="emptyCatNotice">선택된 전문 분야가 없습니다. 드롭다운에서 선택 후 "+ 분야 추가" 버튼을 눌러주세요 (최대 5개).</span>
+              <span style="color: var(--text-muted); font-size: 0.85rem; display: flex; align-items: center;" id="emptyCatNotice">선택된 전문분야가 없습니다. 대분류와 세부분야를 선택 후 "+ 분야 추가" 버튼을 눌러주세요 (최대 5개).</span>
             </div>
           </div>
 
@@ -905,38 +907,84 @@
   </footer>
 
   <script>
-    // Max 5 Selected Categories State
+    // Max 5 Selected Categories State & Taxonomy DB
     var selectedCategoryList = [];
+    var industryTaxonomy = {
+      "금융": ["은행", "증권", "보험", "기타 (직접 입력)"],
+      "제조": ["자동차", "조선", "화학", "철강", "기타 (직접 입력)"],
+      "IT": ["프로그램 개발", "AI", "XR", "IoT", "기타 (직접 입력)"],
+      "운수업": ["벼", "과수", "채소", "기타 (직접 입력)"],
+      "농업·어업": ["수산", "양식", "기타 (직접 입력)"],
+      "기타": ["기타 (직접 입력)"]
+    };
 
-    function handleCategorySelect() {
-      var select = document.getElementById("categorySelect");
+    function updateSubCategories() {
+      var mainSelect = document.getElementById("mainIndustrySelect");
+      var subSelect = document.getElementById("subIndustrySelect");
       var etcDiv = document.getElementById("etcCategoryDiv");
-      if (select.value === "etc") {
+      var mainVal = mainSelect.value;
+
+      subSelect.innerHTML = '<option value="" disabled selected>2차 세부분야 선택...</option>';
+      etcDiv.style.display = "none";
+
+      if (mainVal && industryTaxonomy[mainVal]) {
+        industryTaxonomy[mainVal].forEach(subItem => {
+          var opt = document.createElement("option");
+          opt.value = subItem;
+          opt.innerText = subItem;
+          subSelect.appendChild(opt);
+        });
+      }
+    }
+
+    function handleSubCategorySelect() {
+      var subSelect = document.getElementById("subIndustrySelect");
+      var etcDiv = document.getElementById("etcCategoryDiv");
+      if (subSelect.value === "기타 (직접 입력)") {
         etcDiv.style.display = "block";
       } else {
         etcDiv.style.display = "none";
       }
     }
 
-    function addSelectedCategory() {
-      var select = document.getElementById("categorySelect");
-      var val = select.value;
-      if (!val || val === "etc") return;
-      
-      addCategoryChip(val);
-      select.selectedIndex = 0;
-      handleCategorySelect();
+    function addCategoryFromSelect() {
+      var mainVal = document.getElementById("mainIndustrySelect").value;
+      var subVal = document.getElementById("subIndustrySelect").value;
+      if (!mainVal || !subVal) {
+        alert("1차 대분류와 2차 세부분야를 모두 선택해 주세요.");
+        return;
+      }
+
+      if (subVal === "기타 (직접 입력)") {
+        document.getElementById("etcCategoryDiv").style.display = "block";
+        document.getElementById("etcCategoryInput").focus();
+        return;
+      }
+
+      var fullCategoryTag = mainVal + ": " + subVal;
+      addCategoryChip(fullCategoryTag);
+
+      // Reset selects
+      document.getElementById("mainIndustrySelect").selectedIndex = 0;
+      updateSubCategories();
     }
 
     function addCustomCategory() {
+      var mainVal = document.getElementById("mainIndustrySelect").value || "기타";
       var input = document.getElementById("etcCategoryInput");
-      var val = input.value.trim();
-      if (!val) return;
+      var customText = input.value.trim();
+      if (!customText) {
+        alert("기타 세부분야명을 입력해 주세요.");
+        return;
+      }
 
-      addCategoryChip(val);
+      var fullCategoryTag = mainVal + ": " + customText;
+      addCategoryChip(fullCategoryTag);
+
       input.value = "";
-      document.getElementById("categorySelect").selectedIndex = 0;
-      handleCategorySelect();
+      document.getElementById("etcCategoryDiv").style.display = "none";
+      document.getElementById("mainIndustrySelect").selectedIndex = 0;
+      updateSubCategories();
     }
 
     function addCategoryChip(name) {
@@ -966,7 +1014,7 @@
       countLabel.innerText = `최대 5개까지 선택 가능 (${selectedCategoryList.length}/5)`;
 
       if (selectedCategoryList.length === 0) {
-        container.innerHTML = `<span style="color: var(--text-muted); font-size: 0.85rem; display: flex; align-items: center;" id="emptyCatNotice">선택된 전문 분야가 없습니다. 드롭다운에서 선택 후 "+ 분야 추가" 버튼을 눌러주세요 (최대 5개).</span>`;
+        container.innerHTML = `<span style="color: var(--text-muted); font-size: 0.85rem; display: flex; align-items: center;" id="emptyCatNotice">선택된 전문분야가 없습니다. 대분류와 세부분야를 선택 후 "+ 분야 추가" 버튼을 눌러주세요 (최대 5개).</span>`;
         return;
       }
 
