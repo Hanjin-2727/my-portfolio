@@ -679,6 +679,15 @@
             <button type="button" class="btn-add-proj" onclick="addProjectField()">+ 프로젝트 추가하기</button>
           </div>
 
+          <!-- 4. 총 경력 연차 (Years of Experience) -->
+          <div class="form-group full-width" style="margin-top: 10px;">
+            <label for="years">4. 총 경력 연차 (Years of Experience)<span class="req">*</span></label>
+            <div style="display: flex; align-items: center; gap: 12px; max-width: 320px;">
+              <input type="number" id="years" placeholder="예: 25 (10년 이상)" min="0" required style="flex: 1;">
+              <span style="font-weight: 600; color: #cbd5e1; white-space: nowrap;">년</span>
+            </div>
+          </div>
+
           <button type="button" class="btn-submit" onclick="submitForm()">어드바이저 프로필 저장 및 등록</button>
         </form>
       </div>
