@@ -738,35 +738,47 @@
             </div>
           </div>
 
-          <!-- Keyword Search Row -->
-          <div>
-            <label for="searchInput">통합 키워드 검색 (프로젝트명, 역할, 닉네임)</label>
-            <input type="text" id="searchInput" placeholder="검색어를 입력하세요 (예: 토크노믹스, 아키텍트, 새벽공기)..." onkeyup="filterAdvisors()">
+          <!-- Keyword Search Row & Execution Button -->
+          <div style="display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 260px;">
+              <label for="searchInput">통합 키워드 검색 (프로젝트명, 역할, 닉네임)</label>
+              <input type="text" id="searchInput" placeholder="검색어를 입력하세요 (예: 토크노믹스, 아키텍트, 물류, 스마트팜)..." onkeyup="filterAdvisors()">
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button type="button" class="btn-action-msg" style="padding: 12px 20px; font-weight: 700; white-space: nowrap;" onclick="filterAdvisors(true)">🔍 실시간 매칭 검색 실행</button>
+              <button type="button" class="btn-action-call" style="padding: 12px 16px; background-color: #475569; white-space: nowrap;" onclick="resetSearchFilters()">🔄 필터 초기화</button>
+            </div>
           </div>
+        </div>
+
+        <!-- Live Search Result Count Notice Bar -->
+        <div id="searchResultNotice" style="margin-bottom: 18px; padding: 12px 16px; background-color: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 8px; color: #93c5fd; font-size: 0.9rem; font-weight: 600; display: flex; align-items: center; justify-content: space-between;">
+          <span>📊 매칭된 시니어 어드바이저: <strong id="matchedAdvisorCount" style="color: #34d399; font-size: 1.05rem;">5</strong>명</span>
+          <span style="font-size: 0.8rem; color: #94a3b8; font-weight: normal;">* 레이어 필터 변경 시 결과가 실시간 업데이트됩니다.</span>
         </div>
 
         <!-- Advisor Results List -->
         <div class="advisor-list" id="advisorList">
           
-          <!-- Advisor Card 1 -->
-          <div class="advisor-card" data-domain="IT/SW Finance/Web3" data-dept="Tech/Engineering Strategy/Planning" data-exp="25">
+          <!-- Advisor Card 1 (IT / 25년) -->
+          <div class="advisor-card" data-domain="IT/SW" data-exp="25">
             <div class="advisor-info">
               <h3>새벽공기 수석 어드바이저 <span style="font-size: 0.8rem; color: #94a3b8; font-weight: normal;">(Adv-89F2)</span> <span style="font-size: 0.85rem; color: #34d399; margin-left: 8px;">★ 4.9 (28건 평가)</span></h3>
               
               <div class="layer-badges">
-                <span class="layer-badge lb-domain">1단: ICT/IT & Web3</span>
-                <span class="layer-badge lb-dept">2단: 기술 R&D / 수석 아키텍트</span>
+                <span class="layer-badge lb-domain">1단: IT / 소프트웨어</span>
+                <span class="layer-badge lb-dept">2단: #토크노믹스 #분산아키텍처</span>
                 <span class="layer-badge lb-exp">3단: 총 경력 25년</span>
               </div>
 
               <p style="font-size: 0.85rem; color: #cbd5e1; margin-top: 6px;">대표 프로젝트: 글로벌 DAO 토크노믹스 및 분산 아키텍처 설계 (총괄 리드)</p>
               
               <div class="advisor-tags">
-                <span class="tag-chip">Software Engineering</span>
-                <span class="tag-chip">Blockchain & Web3</span>
-                <span class="tag-chip">Smart Contract</span>
-                <span class="tag-chip">DAO Systems</span>
-                <span class="tag-chip">ZK Rollups</span>
+                <span class="tag-chip">#Software Engineering</span>
+                <span class="tag-chip">#Blockchain & Web3</span>
+                <span class="tag-chip">#Smart Contract</span>
+                <span class="tag-chip">#DAO Systems</span>
+                <span class="tag-chip">#ZK Rollups</span>
               </div>
             </div>
             <div class="advisor-actions">
@@ -775,23 +787,24 @@
             </div>
           </div>
 
-          <!-- Advisor Card 2 -->
-          <div class="advisor-card" data-domain="Finance/Web3 Consulting" data-dept="Finance/VC Strategy/Planning" data-exp="12">
+          <!-- Advisor Card 2 (금융 / 12년) -->
+          <div class="advisor-card" data-domain="Finance/Web3" data-exp="12">
             <div class="advisor-info">
               <h3>푸른바다 전문 파트너 <span style="font-size: 0.8rem; color: #94a3b8; font-weight: normal;">(Adv-71B3)</span> <span style="font-size: 0.85rem; color: #34d399; margin-left: 8px;">★ 4.8 (15건 평가)</span></h3>
               
               <div class="layer-badges">
-                <span class="layer-badge lb-domain">1단: 금융 / 핀테크 & 컨설팅</span>
-                <span class="layer-badge lb-dept">2단: 재무 / VC 투자 & 전략</span>
+                <span class="layer-badge lb-domain">1단: 금융 / 핀테크</span>
+                <span class="layer-badge lb-dept">2단: #VC투자 #밸류에이션</span>
                 <span class="layer-badge lb-exp">3단: 총 경력 12년</span>
               </div>
 
               <p style="font-size: 0.85rem; color: #cbd5e1; margin-top: 6px;">대표 프로젝트: Series-B 스타트업 밸류에이션 및 투자 유치 총괄</p>
               
               <div class="advisor-tags">
-                <span class="tag-chip">Venture Capital</span>
-                <span class="tag-chip">Growth Strategy</span>
-                <span class="tag-chip">Valuation</span>
+                <span class="tag-chip">#Venture Capital</span>
+                <span class="tag-chip">#Growth Strategy</span>
+                <span class="tag-chip">#Valuation</span>
+                <span class="tag-chip">#Fintech</span>
               </div>
             </div>
             <div class="advisor-actions">
@@ -800,28 +813,78 @@
             </div>
           </div>
 
-          <!-- Advisor Card 3 -->
-          <div class="advisor-card" data-domain="Semiconductor/Energy IT/SW" data-dept="Tech/Engineering Sales/BD" data-exp="18">
+          <!-- Advisor Card 3 (제조 / 18년) -->
+          <div class="advisor-card" data-domain="Semiconductor/Energy" data-exp="18">
             <div class="advisor-info">
               <h3>솔바람 수석 연구위원 <span style="font-size: 0.8rem; color: #94a3b8; font-weight: normal;">(Adv-55E8)</span> <span style="font-size: 0.85rem; color: #34d399; margin-left: 8px;">★ 4.9 (42건 평가)</span></h3>
               
               <div class="layer-badges">
                 <span class="layer-badge lb-domain">1단: 제조 / 반도체 & 에너지</span>
-                <span class="layer-badge lb-dept">2단: 기술 R&D / 해외 BD</span>
+                <span class="layer-badge lb-dept">2단: #반도체공정 #지식그래프</span>
                 <span class="layer-badge lb-exp">3단: 총 경력 18년</span>
               </div>
 
               <p style="font-size: 0.85rem; color: #cbd5e1; margin-top: 6px;">대표 프로젝트: 차세대 반도체 공정 자동화 및 지식 그래프 기반 데이터 플랫폼</p>
               
               <div class="advisor-tags">
-                <span class="tag-chip">Semiconductor</span>
-                <span class="tag-chip">Database Architecture</span>
-                <span class="tag-chip">R&D Lead</span>
+                <span class="tag-chip">#Semiconductor</span>
+                <span class="tag-chip">#Database Architecture</span>
+                <span class="tag-chip">#R&D Lead</span>
               </div>
             </div>
             <div class="advisor-actions">
               <button class="btn-action-msg" onclick="startComm('솔바람 수석 연구위원', 'msg')">💬 메시지</button>
               <button class="btn-action-call" onclick="startComm('솔바람 수석 연구위원', 'call')">📞 컨퍼런스 콜</button>
+            </div>
+          </div>
+
+          <!-- Advisor Card 4 (운수업 / 32년) -->
+          <div class="advisor-card" data-domain="Logistics/Transport" data-exp="32">
+            <div class="advisor-info">
+              <h3>은빛구름 상임 고문 <span style="font-size: 0.8rem; color: #94a3b8; font-weight: normal;">(Adv-33A1)</span> <span style="font-size: 0.85rem; color: #34d399; margin-left: 8px;">★ 5.0 (53건 평가)</span></h3>
+              
+              <div class="layer-badges">
+                <span class="layer-badge lb-domain">1단: 운수업 / 글로벌 물류 SCM</span>
+                <span class="layer-badge lb-dept">2단: #공급망SCM #해운항공물류</span>
+                <span class="layer-badge lb-exp">3단: 총 경력 32년</span>
+              </div>
+
+              <p style="font-size: 0.85rem; color: #cbd5e1; margin-top: 6px;">대표 프로젝트: 글로벌 1위 물류 솔루션 SCM 통합 및 스마트 물류센터 구축 자문</p>
+              
+              <div class="advisor-tags">
+                <span class="tag-chip">#Supply Chain</span>
+                <span class="tag-chip">#Logistics SCM</span>
+                <span class="tag-chip">#Freight Transport</span>
+              </div>
+            </div>
+            <div class="advisor-actions">
+              <button class="btn-action-msg" onclick="startComm('은빛구름 상임 고문', 'msg')">💬 메시지</button>
+              <button class="btn-action-call" onclick="startComm('은빛구름 상임 고문', 'call')">📞 컨퍼런스 콜</button>
+            </div>
+          </div>
+
+          <!-- Advisor Card 5 (농업·어업 / 22년) -->
+          <div class="advisor-card" data-domain="Bio/Healthcare" data-exp="22">
+            <div class="advisor-info">
+              <h3>청산유수 최고 어드바이저 <span style="font-size: 0.8rem; color: #94a3b8; font-weight: normal;">(Adv-99K4)</span> <span style="font-size: 0.85rem; color: #34d399; margin-left: 8px;">★ 4.9 (31건 평가)</span></h3>
+              
+              <div class="layer-badges">
+                <span class="layer-badge lb-domain">1단: 농업·어업 / 바이오</span>
+                <span class="layer-badge lb-dept">2단: #스마트팜 #양식바이오소재</span>
+                <span class="layer-badge lb-exp">3단: 총 경력 22년</span>
+              </div>
+
+              <p style="font-size: 0.85rem; color: #cbd5e1; margin-top: 6px;">대표 프로젝트: ICT 온실 스마트팜 수확 자동화 및 수산 양식 센서 모니터링 구축</p>
+              
+              <div class="advisor-tags">
+                <span class="tag-chip">#Smart Farm</span>
+                <span class="tag-chip">#Aquaculture Bio</span>
+                <span class="tag-chip">#Sensor IoT</span>
+              </div>
+            </div>
+            <div class="advisor-actions">
+              <button class="btn-action-msg" onclick="startComm('청산유수 최고 어드바이저', 'msg')">💬 메시지</button>
+              <button class="btn-action-call" onclick="startComm('청산유수 최고 어드바이저', 'call')">📞 컨퍼런스 콜</button>
             </div>
           </div>
 
@@ -1164,13 +1227,14 @@
     }
 
     // 3-Layer Advisor Search & Filtering Logic (Layer 1: Domain, Layer 2: Keyword, Layer 3: Experience)
-    function filterAdvisors() {
+    function filterAdvisors(isButtonClick) {
       var domainFilter = document.getElementById("layerDomain").value;
-      var keywordFilter = (document.getElementById("layerKeyword") ? document.getElementById("layerKeyword").value.toLowerCase() : "");
+      var keywordFilter = (document.getElementById("layerKeyword") ? document.getElementById("layerKeyword").value.trim().toLowerCase() : "");
       var minExp = parseInt(document.getElementById("layerExp").value) || 0;
-      var query = document.getElementById("searchInput").value.toLowerCase();
+      var query = (document.getElementById("searchInput") ? document.getElementById("searchInput").value.trim().toLowerCase() : "");
 
       var cards = document.querySelectorAll(".advisor-card");
+      var matchedCount = 0;
 
       cards.forEach(card => {
         var cardDomain = card.getAttribute("data-domain") || "";
@@ -1184,10 +1248,32 @@
 
         if (matchDomain && matchKeyword && matchExp && matchQuery) {
           card.style.display = "flex";
+          matchedCount++;
         } else {
           card.style.display = "none";
         }
       });
+
+      // Update live counter badge
+      var countEl = document.getElementById("matchedAdvisorCount");
+      if (countEl) countEl.innerText = matchedCount;
+
+      if (isButtonClick) {
+        if (matchedCount > 0) {
+          showToast("검색 조건에 일치하는 " + matchedCount + "명의 시니어 어드바이저를 찾았습니다!");
+        } else {
+          showToast("일치하는 어드바이저가 없습니다. 검색 조건을 조정해 주세요.");
+        }
+      }
+    }
+
+    function resetSearchFilters() {
+      document.getElementById("layerDomain").selectedIndex = 0;
+      if (document.getElementById("layerKeyword")) document.getElementById("layerKeyword").value = "";
+      document.getElementById("layerExp").selectedIndex = 0;
+      if (document.getElementById("searchInput")) document.getElementById("searchInput").value = "";
+      filterAdvisors(false);
+      showToast("검색 조건이 초기화되었습니다.");
     }
 
     // AI Legal Review for Special Contract Terms <1>
