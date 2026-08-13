@@ -609,18 +609,29 @@
           
           <!-- 1. 사용 기간 (시작일 -> 종료일) -->
           <div class="form-group full-width">
-            <label>1. 대여 사용 기간 (최소 1달 이상 선택)<span class="req">*</span></label>
-            <div style="display: flex; gap: 14px; flex-wrap: wrap;">
-              <div style="flex: 1; min-width: 200px;">
-                <span style="font-size: 0.8rem; color: var(--text-muted);">시작일 (Start Date)</span>
-                <input type="date" id="startDate" required onchange="calculateRentalPeriod()">
+            <label>1. 대여 사용 기간 (시작일 & 종료일 달력 선택)<span class="req">*</span></label>
+            <div style="display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 10px;">
+              <div style="flex: 1; min-width: 220px;">
+                <span style="font-size: 0.82rem; color: var(--primary); font-weight: 600;">📅 시작일 (Start Date)</span>
+                <input type="date" id="startDate" required onchange="calculateRentalPeriod()" style="font-weight: 600;">
               </div>
-              <div style="flex: 1; min-width: 200px;">
-                <span style="font-size: 0.8rem; color: var(--text-muted);">종료일 (End Date)</span>
-                <input type="date" id="endDate" required onchange="calculateRentalPeriod()">
+              <div style="flex: 1; min-width: 220px;">
+                <span style="font-size: 0.82rem; color: var(--primary); font-weight: 600;">📅 종료일 (End Date)</span>
+                <input type="date" id="endDate" required onchange="calculateRentalPeriod()" style="font-weight: 600;">
               </div>
             </div>
-            <p id="periodNotice" style="font-size: 0.85rem; color: var(--primary); margin-top: 6px;">📅 대여 기간을 선택하세요 (1달 이상 필수).</p>
+
+            <!-- Quick Duration Preset Buttons -->
+            <div style="display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap;">
+              <button type="button" class="btn-secondary" style="padding: 6px 12px; font-size: 0.82rem;" onclick="setRentalDurationPreset(30)">🗓️ 1달 대여 (30일)</button>
+              <button type="button" class="btn-secondary" style="padding: 6px 12px; font-size: 0.82rem;" onclick="setRentalDurationPreset(90)">🗓️ 3달 대여 (90일)</button>
+              <button type="button" class="btn-secondary" style="padding: 6px 12px; font-size: 0.82rem;" onclick="setRentalDurationPreset(180)">🗓️ 6달 대여 (180일)</button>
+              <button type="button" class="btn-secondary" style="padding: 6px 12px; font-size: 0.82rem;" onclick="setRentalDurationPreset(365)">🗓️ 1년 대여 (365일)</button>
+            </div>
+
+            <div id="periodNotice" style="padding: 10px 14px; background-color: rgba(6, 182, 212, 0.12); border: 1px solid rgba(6, 182, 212, 0.3); border-radius: 8px; font-size: 0.88rem; color: var(--primary); font-weight: 600;">
+              📅 대여 기간을 입력하거나 달력에서 시작일/종료일을 선택해 주세요.
+            </div>
           </div>
 
           <!-- 2. 예산 범위 선택 -->
@@ -875,6 +886,18 @@
       selectedBikeType = type;
     }
 
+    // Preset Rental Duration Helper
+    function setRentalDurationPreset(days) {
+      var start = new Date();
+      var end = new Date();
+      end.setDate(start.getDate() + days);
+
+      document.getElementById("startDate").value = start.toISOString().split('T')[0];
+      document.getElementById("endDate").value = end.toISOString().split('T')[0];
+      calculateRentalPeriod();
+      showToast("대여 기간이 " + days + "일로 자동 설정되었습니다.");
+    }
+
     // Date Rental Period Calculation
     function calculateRentalPeriod() {
       var startVal = document.getElementById("startDate").value;
@@ -887,13 +910,25 @@
         var diffTime = end - start;
         var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
+        if (diffDays <= 0) {
+          notice.style.backgroundColor = "rgba(239, 68, 68, 0.15)";
+          notice.style.borderColor = "rgba(239, 68, 68, 0.4)";
+          notice.style.color = "#fca5a5";
+          notice.innerText = "⚠️ 종료일은 시작일보다 이후 날짜여야 합니다.";
+          return;
+        }
+
         if (diffDays < 30) {
-          notice.style.color = "#ef4444";
-          notice.innerText = `⚠️ 선택된 대여 기간: ${diffDays}일 (장기 렌털은 1달/30일 이상 필수입니다).`;
+          notice.style.backgroundColor = "rgba(245, 158, 11, 0.15)";
+          notice.style.borderColor = "rgba(245, 158, 11, 0.4)";
+          notice.style.color = "#fcd34d";
+          notice.innerText = `⚠️ 선택된 기간: ${startVal} ~ ${endVal} (총 ${diffDays}일) - 장기 렌털은 30일(1달) 이상 권장됩니다.`;
         } else {
           var months = (diffDays / 30).toFixed(1);
-          notice.style.color = "#34d399";
-          notice.innerText = `✅ 선택된 대여 기간: 총 ${diffDays}일 (약 ${months}개월 사용 설정완료).`;
+          notice.style.backgroundColor = "rgba(16, 185, 129, 0.15)";
+          notice.style.borderColor = "rgba(16, 185, 129, 0.4)";
+          notice.style.color = "#6ee7b7";
+          notice.innerText = `✅ 선택된 실시간 대여 기간: ${startVal} ~ ${endVal} (총 ${diffDays}일 / 약 ${months}개월 사용 설정완료).`;
         }
       }
     }
