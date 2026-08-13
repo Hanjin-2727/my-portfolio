@@ -1,84 +1,905 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advisor Data Input</title>
-    <style>
-        body { font-family: system-ui, sans-serif; line-height: 1.6; padding: 20px; max-width: 600px; margin: 0 auto; color: #333; background-color: #f9f9f9;}
-        .card { background: white; border: 1px solid #ddd; padding: 24px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        h2 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; margin-top: 0; }
-        .form-group { margin-bottom: 20px; }
-        label { display: block; font-weight: bold; margin-bottom: 5px; }
-        input[type="text"], input[type="number"], select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 1em; }
-        #etcInputDiv { display: none; margin-top: 10px; }
-        button { background: #3498db; color: white; border: none; padding: 12px 20px; font-size: 1em; border-radius: 4px; cursor: pointer; width: 100%; font-weight: bold;}
-        button:hover { background: #2980b9; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Senior Advisor MVP - II. 화면설계</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #0f172a;
+      --card-bg: #1e293b;
+      --card-border: rgba(255, 255, 255, 0.1);
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --accent: #10b981;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --input-bg: #0f172a;
+      --input-border: #334155;
+      --active-tab: #3b82f6;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Noto Sans KR', 'Inter', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background-color: #1e293b;
+      border-bottom: 1px solid var(--card-border);
+      padding: 24px 20px;
+      text-align: center;
+    }
+
+    .header-container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .badge-sub {
+      display: inline-block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--primary);
+      background-color: rgba(59, 130, 246, 0.15);
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 8px;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 6px;
+    }
+
+    p.desc {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+    }
+
+    /* Tab Navigation */
+    .tab-nav-container {
+      background-color: #1e293b;
+      border-bottom: 1px solid var(--card-border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .tab-nav {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: flex;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .tab-btn {
+      flex: 1;
+      min-width: 160px;
+      padding: 16px 12px;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      white-space: nowrap;
+    }
+
+    .tab-btn:hover {
+      color: var(--text-main);
+      background-color: rgba(255, 255, 255, 0.03);
+    }
+
+    .tab-btn.active {
+      color: var(--primary);
+      border-bottom-color: var(--active-tab);
+      background-color: rgba(59, 130, 246, 0.08);
+    }
+
+    /* Main Content Container */
+    main {
+      max-width: 1000px;
+      width: 100%;
+      margin: 30px auto;
+      padding: 0 20px;
+      flex: 1;
+    }
+
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* UI Cards */
+    .card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 30px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+      margin-bottom: 24px;
+    }
+
+    .card-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    /* Forms & Inputs */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group.full-width {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #cbd5e1;
+      margin-bottom: 8px;
+    }
+
+    label .req {
+      color: #ef4444;
+      margin-left: 3px;
+    }
+
+    input[type="text"], input[type="number"], select, textarea {
+      width: 100%;
+      padding: 12px 14px;
+      background-color: var(--input-bg);
+      border: 1px solid var(--input-border);
+      border-radius: 8px;
+      color: var(--text-main);
+      font-size: 0.95rem;
+      font-family: inherit;
+      transition: border-color 0.2s ease;
+    }
+
+    input[type="text"]:focus, input[type="number"]:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    #etcInputDiv {
+      display: none;
+      margin-top: 10px;
+    }
+
+    /* Project Group Dynamic List */
+    .project-item {
+      background-color: rgba(15, 23, 42, 0.6);
+      border: 1px dashed var(--input-border);
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 16px;
+      position: relative;
+    }
+
+    .btn-add-proj {
+      background-color: transparent;
+      border: 1px dashed var(--primary);
+      color: var(--primary);
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      transition: background-color 0.2s ease;
+      margin-bottom: 20px;
+    }
+
+    .btn-add-proj:hover {
+      background-color: rgba(59, 130, 246, 0.1);
+    }
+
+    .btn-submit {
+      background-color: var(--primary);
+      color: #ffffff;
+      border: none;
+      padding: 14px 24px;
+      font-size: 1rem;
+      font-weight: 700;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 100%;
+      transition: background-color 0.2s ease;
+    }
+
+    .btn-submit:hover {
+      background-color: var(--primary-hover);
+    }
+
+    /* Tab 2: Search UI */
+    .search-bar-container {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .search-input-wrapper {
+      flex: 1;
+      min-width: 260px;
+    }
+
+    .search-filter-select {
+      width: 180px;
+    }
+
+    .advisor-list {
+      display: grid;
+      gap: 18px;
+    }
+
+    .advisor-card {
+      background-color: #0f172a;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .advisor-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+
+    .advisor-info h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 4px;
+    }
+
+    .advisor-tags {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .tag-chip {
+      font-size: 0.8rem;
+      background-color: rgba(59, 130, 246, 0.15);
+      color: var(--primary);
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-weight: 500;
+    }
+
+    .advisor-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-action-msg {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 9px 16px;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-action-call {
+      background-color: var(--accent);
+      color: white;
+      border: none;
+      padding: 9px 16px;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* Tab 3: Communication UI */
+    .comm-split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    @media (max-width: 768px) {
+      .comm-split { grid-template-columns: 1fr; }
+    }
+
+    .chat-box {
+      background-color: #0f172a;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      height: 380px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chat-messages {
+      flex: 1;
+      padding: 16px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: flex-column;
+      gap: 12px;
+    }
+
+    .chat-msg {
+      max-width: 80%;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 0.9rem;
+    }
+
+    .msg-received {
+      background-color: #1e293b;
+      align-self: flex-start;
+      border-bottom-left-radius: 2px;
+    }
+
+    .msg-sent {
+      background-color: var(--primary);
+      color: white;
+      align-self: flex-end;
+      border-bottom-right-radius: 2px;
+    }
+
+    .chat-input-area {
+      display: flex;
+      padding: 12px;
+      border-top: 1px solid var(--card-border);
+      gap: 8px;
+    }
+
+    .call-box {
+      background-color: #0f172a;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .call-avatar {
+      width: 80px;
+      height: 80px;
+      background-color: #3b82f6;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      color: white;
+      margin-bottom: 16px;
+    }
+
+    .call-controls {
+      display: flex;
+      gap: 16px;
+      margin-top: 24px;
+    }
+
+    .btn-circle {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: none;
+      background-color: #334155;
+      color: white;
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-circle.end-call {
+      background-color: #ef4444;
+    }
+
+    /* Tab 4: Rating UI */
+    .star-rating {
+      display: flex;
+      gap: 8px;
+      font-size: 1.8rem;
+      color: #f59e0b;
+      cursor: pointer;
+      margin-bottom: 20px;
+    }
+
+    .review-list {
+      margin-top: 24px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .review-item {
+      background-color: #0f172a;
+      border: 1px solid var(--card-border);
+      padding: 16px;
+      border-radius: 10px;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background-color: var(--accent);
+      color: white;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+      display: none;
+      z-index: 1000;
+    }
+
+    footer {
+      text-align: center;
+      padding: 24px;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      border-top: 1px solid var(--card-border);
+    }
+  </style>
 </head>
 <body>
-    <div class="card">
-        <h2>Register Your Experience</h2>
-        <form>
-            
-            <!-- Career Category (Dropdown) -->
-            <div class="form-group">
-                <label for="category">Sector & Expertise</label>
-                <select id="category" onchange="toggleEtcInput()">
-                    <option value="" disabled selected>Select your primary field...</option>
-                    <option value="Software Engineering">1. Software Engineering</option>
-                    <option value="Blockchain & Web3">2. Blockchain & Web3</option>
-                    <option value="Smart Contract Programming">3. Smart Contract Programming</option>
-                    <option value="ZK Rollups & Crypto">4. ZK Rollups & Crypto</option>
-                    <option value="DAO Systems">5. DAO Systems</option>
-                    <option value="Lean Startup Methodology">6. Lean Startup Methodology</option>
-                    <option value="Venture Capital Investment">7. Venture Capital Investment</option>
-                    <option value="Database Design & Architecture">8. Database Design & Architecture</option>
-                    <option value="Private Cloud Networks">9. Private Cloud Networks</option>
-                    <option value="Corporate Growth Strategies">10. Corporate Growth Strategies</option>
-                    <option value="etc">11. etc (Other)</option>
-                </select>
-                
-                <!-- Hidden direct input box for 'etc' -->
-                <div id="etcInputDiv">
-                    <input type="text" id="etcCategory" placeholder="Please specify your sector...">
-                </div>
-            </div>
 
-            <!-- Years (Numbers Only) -->
-            <div class="form-group">
-                <label for="years">Years of Experience</label>
-                <input type="number" id="years" placeholder="e.g., 30" min="0">
-            </div>
-
-            <!-- Project Name -->
-            <div class="form-group">
-                <label for="projectName">Major Project Name</label>
-                <input type="text" id="projectName" placeholder="e.g., Global DAO Tokenomics Structure">
-            </div>
-
-            <!-- Your Role -->
-            <div class="form-group">
-                <label for="projectRole">Your Role in Project</label>
-                <input type="text" id="projectRole" placeholder="e.g., Lead Architect / Consultant">
-            </div>
-
-            <button type="button" onclick="alert('Data saved! (This is an MVP test)')">Submit Profile</button>
-        </form>
+  <!-- Header -->
+  <header>
+    <div class="header-container">
+      <span class="badge-sub">Senior Advisor System MVP</span>
+      <h1>II. 화면설계 (UI/UX Architecture)</h1>
+      <p class="desc">도메인 경력 등록부터 검색, 커뮤니케이션, 평가까지의 대화형 화면 구성 프로토타입</p>
     </div>
+  </header>
 
-    <script>
-        function toggleEtcInput() {
-            var categorySelect = document.getElementById("category");
-            var etcDiv = document.getElementById("etcInputDiv");
-            
-            // Show the text input only if 'etc' is selected
-            if (categorySelect.value === "etc") {
-                etcDiv.style.display = "block";
-            } else {
-                etcDiv.style.display = "none";
-            }
+  <!-- Sticky Tab Navigation -->
+  <div class="tab-nav-container">
+    <nav class="tab-nav">
+      <button class="tab-btn active" onclick="switchTab('tab-input', this)">
+        <span>📝 1. 입력 화면</span>
+      </button>
+      <button class="tab-btn" onclick="switchTab('tab-search', this)">
+        <span>🔍 2. 검색 화면</span>
+      </button>
+      <button class="tab-btn" onclick="switchTab('tab-comm', this)">
+        <span>💬 3. 커뮤니케이션</span>
+      </button>
+      <button class="tab-btn" onclick="switchTab('tab-eval', this)">
+        <span>⭐ 4. 평가 시스템</span>
+      </button>
+    </nav>
+  </div>
+
+  <main>
+
+    <!-- 1. 입력 화면 (Register Experience) -->
+    <section id="tab-input" class="tab-content active">
+      <div class="card">
+        <div class="card-title">📝 어드바이저 도메인 경력 & 프로젝트 등록</div>
+        <form id="advisorForm">
+          
+          <div class="form-grid">
+            <!-- 1. 분야 (Category) -->
+            <div class="form-group">
+              <label for="category">1. 전문 분야 (Sector)<span class="req">*</span></label>
+              <select id="category" onchange="toggleEtcInput()" required>
+                <option value="" disabled selected>주요 전문 분야 선택...</option>
+                <option value="Software Engineering">1. Software Engineering (소프트웨어 공학)</option>
+                <option value="Blockchain & Web3">2. Blockchain & Web3 (블록체인/웹3)</option>
+                <option value="Smart Contract Programming">3. Smart Contract Programming</option>
+                <option value="ZK Rollups & Crypto">4. ZK Rollups & Crypto</option>
+                <option value="DAO Systems">5. DAO Systems (다오 시스템)</option>
+                <option value="Lean Startup Methodology">6. Lean Startup Methodology</option>
+                <option value="Venture Capital Investment">7. Venture Capital Investment (VC 투자)</option>
+                <option value="Database Design & Architecture">8. Database Design & Architecture</option>
+                <option value="Private Cloud Networks">9. Private Cloud Networks</option>
+                <option value="Corporate Growth Strategies">10. Corporate Growth Strategies</option>
+                <option value="etc">11. 기타 (직접 입력)</option>
+              </select>
+
+              <div id="etcInputDiv">
+                <input type="text" id="etcCategory" placeholder="전문 분야를 직접 입력하세요...">
+              </div>
+            </div>
+
+            <!-- 2. 총 경력 연차 (Years) -->
+            <div class="form-group">
+              <label for="years">2. 총 경력 연차 (Years of Experience)<span class="req">*</span></label>
+              <input type="number" id="years" placeholder="예: 15 (년 단위)" min="0" required>
+            </div>
+          </div>
+
+          <!-- 3. 프로젝트 및 수행 정보 (Projects Container) -->
+          <div class="form-group full-width">
+            <label>3. 주요 수행 프로젝트 & 역할 등록<span class="req">*</span></label>
+            <div id="projectContainer">
+              <div class="project-item">
+                <div class="form-grid">
+                  <div>
+                    <label>프로젝트명 (Project Name)</label>
+                    <input type="text" class="proj-name" placeholder="예: 글로벌 DAO 토크노믹스 아키텍처 설계" required>
+                  </div>
+                  <div>
+                    <label>프로젝트에서 역할 (Role in Project)</label>
+                    <input type="text" class="proj-role" placeholder="예: 총괄 리드 아키텍트 / 수석 어드바이저" required>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <button type="button" class="btn-add-proj" onclick="addProjectField()">+ 프로젝트 추가하기</button>
+          </div>
+
+          <button type="button" class="btn-submit" onclick="submitForm()">어드바이저 프로필 저장 및 등록</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- 2. 검색 화면 (Search & Filter) -->
+    <section id="tab-search" class="tab-content">
+      <div class="card">
+        <div class="card-title">🔍 어드바이저 검색 및 도메인/경력 필터링</div>
+        
+        <div class="search-bar-container">
+          <div class="search-input-wrapper">
+            <input type="text" id="searchInput" placeholder="분야, 프로젝트명, 역할, 이름으로 검색..." onkeyup="filterAdvisors()">
+          </div>
+          <select class="search-filter-select" id="expFilter" onchange="filterAdvisors()">
+            <option value="0">경력 전체보기</option>
+            <option value="5">5년 이상</option>
+            <option value="10">10년 이상</option>
+            <option value="20">20년 이상</option>
+          </select>
+        </div>
+
+        <div class="advisor-list" id="advisorList">
+          <!-- Advisor Card 1 -->
+          <div class="advisor-card" data-category="Software Engineering Blockchain" data-exp="25">
+            <div class="advisor-info">
+              <h3>김항진 수석 어드바이저 <span style="font-size: 0.85rem; color: #34d399; margin-left: 8px;">★ 4.9 (28건 평가)</span></h3>
+              <p style="font-size: 0.9rem; color: var(--text-muted);">총 경력: 25년 | 주 분야: Software Engineering & Blockchain</p>
+              <p style="font-size: 0.85rem; color: #cbd5e1; margin-top: 4px;">대표 프로젝트: 글로벌 DAO 토크노믹스 설계 (리드 아키텍트)</p>
+              <div class="advisor-tags">
+                <span class="tag-chip">Software Engineering</span>
+                <span class="tag-chip">Blockchain & Web3</span>
+                <span class="tag-chip">Lead Architect</span>
+              </div>
+            </div>
+            <div class="advisor-actions">
+              <button class="btn-action-msg" onclick="startComm('김항진 수석 어드바이저', 'msg')">💬 메시지</button>
+              <button class="btn-action-call" onclick="startComm('김항진 수석 어드바이저', 'call')">📞 컨퍼런스 콜</button>
+            </div>
+          </div>
+
+          <!-- Advisor Card 2 -->
+          <div class="advisor-card" data-category="Venture Capital Investment" data-exp="12">
+            <div class="advisor-info">
+              <h3>이진우 전문 파트너 <span style="font-size: 0.85rem; color: #34d399; margin-left: 8px;">★ 4.8 (15건 평가)</span></h3>
+              <p style="font-size: 0.9rem; color: var(--text-muted);">총 경력: 12년 | 주 분야: VC 투자 & 기업 성장 전략</p>
+              <p style="font-size: 0.85rem; color: #cbd5e1; margin-top: 4px;">대표 프로젝트: Series-B 스타트업 밸류에이션 및 투자 유치 총괄</p>
+              <div class="advisor-tags">
+                <span class="tag-chip">Venture Capital</span>
+                <span class="tag-chip">Growth Strategy</span>
+              </div>
+            </div>
+            <div class="advisor-actions">
+              <button class="btn-action-msg" onclick="startComm('이진우 전문 파트너', 'msg')">💬 메시지</button>
+              <button class="btn-action-call" onclick="startComm('이진우 전문 파트너', 'call')">📞 컨퍼런스 콜</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. 커뮤니케이션 (Communication) -->
+    <section id="tab-comm" class="tab-content">
+      <div class="card">
+        <div class="card-title">💬 어드바이저 커뮤니케이션 채널</div>
+        
+        <div class="comm-split">
+          <!-- 메시지 연락 (Chat Messenger) -->
+          <div>
+            <h4 style="margin-bottom: 12px; color: #cbd5e1;">✉️ 실시간 1:1 메시지 상담</h4>
+            <div class="chat-box">
+              <div class="chat-messages" id="chatMessages">
+                <div class="chat-msg msg-received">
+                  <strong>김항진 어드바이저:</strong> 안녕하세요! 문의해주신 도메인 아키텍처 상담 관련해서 어떤 부분 위주로 검토해드릴까요?
+                </div>
+              </div>
+              <div class="chat-input-area">
+                <input type="text" id="chatInput" placeholder="메시지를 입력하세요..." onkeypress="if(event.key==='Enter') sendMsg()">
+                <button class="btn-action-msg" onclick="sendMsg()">전송</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 컨퍼런스 콜 (Conference Call) -->
+          <div>
+            <h4 style="margin-bottom: 12px; color: #cbd5e1;">📞 화상/음성 컨퍼런스 콜 룸</h4>
+            <div class="call-box">
+              <div class="call-avatar">👨‍💻</div>
+              <h3 id="callTargetName">김항진 수석 어드바이저</h3>
+              <p style="font-size: 0.85rem; color: #34d399; margin-top: 4px;" id="callStatusText">보안 컨퍼런스 콜 연결 준비 완료</p>
+              
+              <div class="call-controls">
+                <button class="btn-circle" title="마이크 토글" onclick="toggleBtn(this, '🎤')">🎤</button>
+                <button class="btn-circle" title="카메라 토글" onclick="toggleBtn(this, '📹')">📹</button>
+                <button class="btn-circle" title="화면 공유" onclick="toggleBtn(this, '🖥️')">🖥️</button>
+                <button class="btn-circle end-call" title="통화 종료" onclick="endCall()">📵</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. 평가 시스템 (Evaluation) -->
+    <section id="tab-eval" class="tab-content">
+      <div class="card">
+        <div class="card-title">⭐ 자문 세션 만족도 및 어드바이저 평가</div>
+        
+        <form id="evalForm">
+          <div class="form-group">
+            <label>1. 세션 만족도 별점 선택</label>
+            <div class="star-rating" id="starContainer">
+              <span onclick="setRating(1)">★</span>
+              <span onclick="setRating(2)">★</span>
+              <span onclick="setRating(3)">★</span>
+              <span onclick="setRating(4)">★</span>
+              <span onclick="setRating(5)">★</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="evalReview">2. 자문 한 줄 서평 및 평가 의견<span class="req">*</span></label>
+            <textarea id="evalReview" rows="4" placeholder="어드바이저의 전문성, 답변의 정확도, 커뮤니케이션 만족도에 대해 작성해 주세요..." required></textarea>
+          </div>
+
+          <button type="button" class="btn-submit" onclick="submitEvaluation()">평가 등록 제출하기</button>
+        </form>
+
+        <h4 style="margin-top: 30px; margin-bottom: 16px; color: #ffffff;">등록된 최근 자문 평가 및 리뷰</h4>
+        <div class="review-list" id="reviewList">
+          <div class="review-item">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+              <strong style="color: #ffffff;">Senior Lead Manager (테크 기업 A사)</strong>
+              <span style="color: #f59e0b;">★★★★★ 5.0</span>
+            </div>
+            <p style="font-size: 0.9rem; color: var(--text-muted);">"글로벌 DAO 토크노믹스 및 아키텍처 설계와 관련해 수십 년의 노하우가 담긴 핵심적인 가이드를 제공해주셨습니다. 최고입니다."</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <div class="toast" id="toast">저장되었습니다!</div>
+
+  <footer>
+    &copy; 2026 Senior Advisor System. All rights reserved.
+  </footer>
+
+  <script>
+    // Tab Switching
+    function switchTab(tabId, btn) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+      
+      document.getElementById(tabId).classList.add('active');
+      btn.classList.add('active');
+    }
+
+    // Etc Input Toggle
+    function toggleEtcInput() {
+      var select = document.getElementById("category");
+      var etcDiv = document.getElementById("etcInputDiv");
+      if (select.value === "etc") {
+        etcDiv.style.display = "block";
+      } else {
+        etcDiv.style.display = "none";
+      }
+    }
+
+    // Add Dynamic Project Input
+    function addProjectField() {
+      var container = document.getElementById("projectContainer");
+      var newItem = document.createElement("div");
+      newItem.className = "project-item";
+      newItem.innerHTML = `
+        <div class="form-grid">
+          <div>
+            <label>프로젝트명 (Project Name)</label>
+            <input type="text" class="proj-name" placeholder="예: 차세대 지식 그래프 파이프라인 구축" required>
+          </div>
+          <div>
+            <label>프로젝트에서 역할 (Role in Project)</label>
+            <input type="text" class="proj-role" placeholder="예: 전문 컨설턴트 / 아키텍트" required>
+          </div>
+        </div>
+      `;
+      container.appendChild(newItem);
+    }
+
+    // Form Submission
+    function submitForm() {
+      showToast("어드바이저 경력 및 프로젝트 프로필이 성공적으로 저장되었습니다!");
+    }
+
+    // Advisor Filter
+    function filterAdvisors() {
+      var query = document.getElementById("searchInput").value.toLowerCase();
+      var minExp = parseInt(document.getElementById("expFilter").value) || 0;
+      var cards = document.querySelectorAll(".advisor-card");
+
+      cards.forEach(card => {
+        var text = card.innerText.toLowerCase();
+        var exp = parseInt(card.getAttribute("data-exp")) || 0;
+
+        if (text.includes(query) && exp >= minExp) {
+          card.style.display = "flex";
+        } else {
+          card.style.display = "none";
         }
-    </script>
+      });
+    }
+
+    // Start Communication
+    function startComm(name, type) {
+      document.getElementById("callTargetName").innerText = name;
+      switchTab('tab-comm', document.querySelectorAll('.tab-btn')[2]);
+      if (type === 'msg') {
+        showToast(name + "님과의 1:1 메시지 상담 창으로 이동했습니다.");
+      } else {
+        showToast(name + "님과의 컨퍼런스 콜 룸이 준비되었습니다.");
+      }
+    }
+
+    // Chat Messenger
+    function sendMsg() {
+      var input = document.getElementById("chatInput");
+      var text = input.value.trim();
+      if (!text) return;
+
+      var chatContainer = document.getElementById("chatMessages");
+      
+      // User Msg
+      var userMsg = document.createElement("div");
+      userMsg.className = "chat-msg msg-sent";
+      userMsg.innerText = text;
+      chatContainer.appendChild(userMsg);
+
+      input.value = "";
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+
+      // Auto Reply Simulation
+      setTimeout(() => {
+        var replyMsg = document.createElement("div");
+        replyMsg.className = "chat-msg msg-received";
+        replyMsg.innerHTML = "<strong>김항진 어드바이저:</strong> 검토 의뢰해주신 사항 확인했습니다. 해당 프로젝트 아키텍처에 관해 답변드립니다.";
+        chatContainer.appendChild(replyMsg);
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+      }, 1000);
+    }
+
+    // Conference Call Toggle Buttons
+    function toggleBtn(btn, icon) {
+      if (btn.style.opacity === "0.5") {
+        btn.style.opacity = "1";
+        showToast("기능이 활성화되었습니다.");
+      } else {
+        btn.style.opacity = "0.5";
+        showToast("기능이 음소거/비활성화되었습니다.");
+      }
+    }
+
+    function endCall() {
+      showToast("컨퍼런스 콜이 종료되었습니다.");
+    }
+
+    // Rating System
+    var currentRating = 5;
+    function setRating(rating) {
+      currentRating = rating;
+      var stars = document.querySelectorAll(".star-rating span");
+      stars.forEach((star, idx) => {
+        if (idx < rating) {
+          star.style.color = "#f59e0b";
+        } else {
+          star.style.color = "#475569";
+        }
+      });
+    }
+
+    function submitEvaluation() {
+      var reviewText = document.getElementById("evalReview").value.trim();
+      if (!reviewText) {
+        alert("평가 의견을 입력해 주세요.");
+        return;
+      }
+
+      var list = document.getElementById("reviewList");
+      var item = document.createElement("div");
+      item.className = "review-item";
+      item.innerHTML = `
+        <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+          <strong style="color: #ffffff;">사용자 평가</strong>
+          <span style="color: #f59e0b;">★ ${currentRating}.0</span>
+        </div>
+        <p style="font-size: 0.9rem; color: var(--text-muted);">${reviewText}</p>
+      `;
+      list.prepend(item);
+      document.getElementById("evalReview").value = "";
+      showToast("평가가 성공적으로 등록되었습니다!");
+    }
+
+    // Toast Notification
+    function showToast(msg) {
+      var t = document.getElementById("toast");
+      t.innerText = msg;
+      t.style.display = "block";
+      setTimeout(() => {
+        t.style.display = "none";
+      }, 2500);
+    }
+  </script>
 </body>
 </html>
