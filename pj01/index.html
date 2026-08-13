@@ -217,9 +217,41 @@
       border-color: var(--primary);
     }
 
-    #etcInputDiv {
-      display: none;
-      margin-top: 10px;
+    /* Selected Category Chips */
+    .cat-chip {
+      background-color: rgba(59, 130, 246, 0.2);
+      border: 1px solid rgba(59, 130, 246, 0.4);
+      color: #93c5fd;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      animation: popIn 0.2s ease;
+    }
+
+    .cat-chip .btn-remove-chip {
+      background: none;
+      border: none;
+      color: #93c5fd;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: bold;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .cat-chip .btn-remove-chip:hover {
+      color: #ef4444;
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
     }
 
     /* Project Group Dynamic List */
@@ -381,7 +413,7 @@
       padding: 16px;
       overflow-y: auto;
       display: flex;
-      flex-direction: flex-column;
+      flex-direction: column;
       gap: 12px;
     }
 
@@ -544,12 +576,15 @@
         <div class="card-title">📝 어드바이저 도메인 경력 & 프로젝트 등록</div>
         <form id="advisorForm">
           
-          <div class="form-grid">
-            <!-- 1. 분야 (Category) -->
-            <div class="form-group">
-              <label for="category">1. 전문 분야 (Sector)<span class="req">*</span></label>
-              <select id="category" onchange="toggleEtcInput()" required>
-                <option value="" disabled selected>주요 전문 분야 선택...</option>
+          <!-- 1. 전문 분야 선택 (최대 5개) -->
+          <div class="form-group full-width">
+            <label for="categorySelect">
+              1. 전문 분야 (Sector) - <span style="color: #60a5fa;" id="categoryCount">최대 5개까지 선택 가능 (0/5)</span><span class="req">*</span>
+            </label>
+            
+            <div style="display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap;">
+              <select id="categorySelect" style="flex: 1; min-width: 260px;" onchange="handleCategorySelect()">
+                <option value="" disabled selected>전문 분야 선택 (최대 5개)...</option>
                 <option value="Software Engineering">1. Software Engineering (소프트웨어 공학)</option>
                 <option value="Blockchain & Web3">2. Blockchain & Web3 (블록체인/웹3)</option>
                 <option value="Smart Contract Programming">3. Smart Contract Programming</option>
@@ -560,24 +595,36 @@
                 <option value="Database Design & Architecture">8. Database Design & Architecture</option>
                 <option value="Private Cloud Networks">9. Private Cloud Networks</option>
                 <option value="Corporate Growth Strategies">10. Corporate Growth Strategies</option>
-                <option value="etc">11. 기타 (직접 입력)</option>
+                <option value="etc">11. 기타 (직접 입력 추가)</option>
               </select>
+              <button type="button" class="btn-action-msg" style="white-space: nowrap; padding: 12px 20px;" onclick="addSelectedCategory()">+ 분야 추가</button>
+            </div>
 
-              <div id="etcInputDiv">
-                <input type="text" id="etcCategory" placeholder="전문 분야를 직접 입력하세요...">
+            <!-- Hidden Custom Category Input -->
+            <div id="etcCategoryDiv" style="display: none; margin-bottom: 12px;">
+              <div style="display: flex; gap: 10px;">
+                <input type="text" id="etcCategoryInput" placeholder="기타 전문 분야명을 직접 입력하세요...">
+                <button type="button" class="btn-action-msg" style="white-space: nowrap;" onclick="addCustomCategory()">직접 추가</button>
               </div>
             </div>
 
+            <!-- Selected Category Tag Chips Box -->
+            <div id="selectedCategories" style="display: flex; flex-wrap: wrap; gap: 10px; min-height: 48px; padding: 12px; background-color: var(--input-bg); border: 1px solid var(--input-border); border-radius: 8px;">
+              <span style="color: var(--text-muted); font-size: 0.85rem; display: flex; align-items: center;" id="emptyCatNotice">선택된 전문 분야가 없습니다. 드롭다운에서 선택 후 "+ 분야 추가" 버튼을 눌러주세요 (최대 5개).</span>
+            </div>
+          </div>
+
+          <div class="form-grid">
             <!-- 2. 총 경력 연차 (Years) -->
             <div class="form-group">
               <label for="years">2. 총 경력 연차 (Years of Experience)<span class="req">*</span></label>
-              <input type="number" id="years" placeholder="예: 15 (년 단위)" min="0" required>
+              <input type="number" id="years" placeholder="예: 25 (년 단위)" min="0" required>
             </div>
           </div>
 
           <!-- 3. 프로젝트 및 수행 정보 (Projects Container) -->
           <div class="form-group full-width">
-            <label>3. 주요 수행 프로젝트 & 역할 등록<span class="req">*</span></label>
+            <label>3. 주요 수행 프로젝트 & 프로젝트에서 역할<span class="req">*</span></label>
             <div id="projectContainer">
               <div class="project-item">
                 <div class="form-grid">
@@ -620,15 +667,17 @@
 
         <div class="advisor-list" id="advisorList">
           <!-- Advisor Card 1 -->
-          <div class="advisor-card" data-category="Software Engineering Blockchain" data-exp="25">
+          <div class="advisor-card" data-category="Software Engineering Blockchain Smart Contract DAO ZK" data-exp="25">
             <div class="advisor-info">
               <h3>김항진 수석 어드바이저 <span style="font-size: 0.85rem; color: #34d399; margin-left: 8px;">★ 4.9 (28건 평가)</span></h3>
-              <p style="font-size: 0.9rem; color: var(--text-muted);">총 경력: 25년 | 주 분야: Software Engineering & Blockchain</p>
+              <p style="font-size: 0.9rem; color: var(--text-muted);">총 경력: 25년 | 전문 분야 (5개 선택됨)</p>
               <p style="font-size: 0.85rem; color: #cbd5e1; margin-top: 4px;">대표 프로젝트: 글로벌 DAO 토크노믹스 설계 (리드 아키텍트)</p>
               <div class="advisor-tags">
                 <span class="tag-chip">Software Engineering</span>
                 <span class="tag-chip">Blockchain & Web3</span>
-                <span class="tag-chip">Lead Architect</span>
+                <span class="tag-chip">Smart Contract</span>
+                <span class="tag-chip">DAO Systems</span>
+                <span class="tag-chip">ZK Rollups</span>
               </div>
             </div>
             <div class="advisor-actions">
@@ -638,7 +687,7 @@
           </div>
 
           <!-- Advisor Card 2 -->
-          <div class="advisor-card" data-category="Venture Capital Investment" data-exp="12">
+          <div class="advisor-card" data-category="Venture Capital Investment Growth Strategy" data-exp="12">
             <div class="advisor-info">
               <h3>이진우 전문 파트너 <span style="font-size: 0.85rem; color: #34d399; margin-left: 8px;">★ 4.8 (15건 평가)</span></h3>
               <p style="font-size: 0.9rem; color: var(--text-muted);">총 경력: 12년 | 주 분야: VC 투자 & 기업 성장 전략</p>
@@ -746,6 +795,83 @@
   </footer>
 
   <script>
+    // Max 5 Selected Categories State
+    var selectedCategoryList = [];
+
+    function handleCategorySelect() {
+      var select = document.getElementById("categorySelect");
+      var etcDiv = document.getElementById("etcCategoryDiv");
+      if (select.value === "etc") {
+        etcDiv.style.display = "block";
+      } else {
+        etcDiv.style.display = "none";
+      }
+    }
+
+    function addSelectedCategory() {
+      var select = document.getElementById("categorySelect");
+      var val = select.value;
+      if (!val || val === "etc") return;
+      
+      addCategoryChip(val);
+      select.selectedIndex = 0;
+      handleCategorySelect();
+    }
+
+    function addCustomCategory() {
+      var input = document.getElementById("etcCategoryInput");
+      var val = input.value.trim();
+      if (!val) return;
+
+      addCategoryChip(val);
+      input.value = "";
+      document.getElementById("categorySelect").selectedIndex = 0;
+      handleCategorySelect();
+    }
+
+    function addCategoryChip(name) {
+      if (selectedCategoryList.length >= 5) {
+        alert("전문 분야는 최대 5개까지 선택할 수 있습니다.");
+        return;
+      }
+
+      if (selectedCategoryList.includes(name)) {
+        alert("이미 추가된 전문 분야입니다.");
+        return;
+      }
+
+      selectedCategoryList.push(name);
+      renderCategoryChips();
+    }
+
+    function removeCategoryChip(name) {
+      selectedCategoryList = selectedCategoryList.filter(item => item !== name);
+      renderCategoryChips();
+    }
+
+    function renderCategoryChips() {
+      var container = document.getElementById("selectedCategories");
+      var countLabel = document.getElementById("categoryCount");
+      
+      countLabel.innerText = `최대 5개까지 선택 가능 (${selectedCategoryList.length}/5)`;
+
+      if (selectedCategoryList.length === 0) {
+        container.innerHTML = `<span style="color: var(--text-muted); font-size: 0.85rem; display: flex; align-items: center;" id="emptyCatNotice">선택된 전문 분야가 없습니다. 드롭다운에서 선택 후 "+ 분야 추가" 버튼을 눌러주세요 (최대 5개).</span>`;
+        return;
+      }
+
+      container.innerHTML = "";
+      selectedCategoryList.forEach(item => {
+        var chip = document.createElement("div");
+        chip.className = "cat-chip";
+        chip.innerHTML = `
+          <span>${item}</span>
+          <button type="button" class="btn-remove-chip" onclick="removeCategoryChip('${item}')" title="삭제">&times;</button>
+        `;
+        container.appendChild(chip);
+      });
+    }
+
     // Tab Switching
     function switchTab(tabId, btn) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
@@ -753,17 +879,6 @@
       
       document.getElementById(tabId).classList.add('active');
       btn.classList.add('active');
-    }
-
-    // Etc Input Toggle
-    function toggleEtcInput() {
-      var select = document.getElementById("category");
-      var etcDiv = document.getElementById("etcInputDiv");
-      if (select.value === "etc") {
-        etcDiv.style.display = "block";
-      } else {
-        etcDiv.style.display = "none";
-      }
     }
 
     // Add Dynamic Project Input
@@ -788,7 +903,11 @@
 
     // Form Submission
     function submitForm() {
-      showToast("어드바이저 경력 및 프로젝트 프로필이 성공적으로 저장되었습니다!");
+      if (selectedCategoryList.length === 0) {
+        alert("전문 분야를 최소 1개 이상 선택해 주세요 (최대 5개).");
+        return;
+      }
+      showToast("어드바이저 전문 분야 (" + selectedCategoryList.length + "개) 및 프로젝트 프로필이 성공적으로 저장되었습니다!");
     }
 
     // Advisor Filter
