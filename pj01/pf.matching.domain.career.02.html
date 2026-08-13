@@ -703,31 +703,31 @@
         
         <!-- 3-Layer Filter Form Box -->
         <div class="filter-layer-box">
-          <div class="layer-title">🎯 계층별 맞춤 필터 레이어 (3-Layer Search Filter)</div>
+          <div class="layer-title">🎯 3단 계층별 조건검색 레이어 (3-Layer Search Filter)</div>
           
           <div class="layer-grid">
-            <!-- Layer 1: 도메인 / 산업분야 분류 -->
+            <!-- Layer 1: 1.도메인(산업분야) -->
             <div>
-              <label for="layerDomain">1번째 레이어: 도메인 (산업분야)</label>
+              <label for="layerDomain">1.도메인(산업분야)</label>
               <select id="layerDomain" onchange="filterAdvisors()">
                 <option value="all">전체 산업분야</option>
                 <option value="IT/SW">ICT / IT & 소프트웨어</option>
                 <option value="Finance/Web3">금융 / 핀테크 & Web3</option>
                 <option value="Semiconductor/Energy">제조 / 반도체 & 에너지</option>
-                <option value="Bio/Healthcare">바이오 & 헬스케어</option>
-                <option value="Consulting">전문 서비스 & 컨설팅</option>
+                <option value="Logistics/Transport">운수업 / 물류 SCM</option>
+                <option value="Bio/Healthcare">농업·어업 / 바이오</option>
               </select>
             </div>
 
-            <!-- Layer 2: 검색어 (검색 키워드) -->
+            <!-- Layer 2: 2.검색어 (키워드) -->
             <div>
-              <label for="layerKeyword">2번째 레이어: 검색어 (키워드)</label>
-              <input type="text" id="layerKeyword" placeholder="검색 키워드 (예: 토크노믹스, 아키텍처)..." onkeyup="filterAdvisors()" style="width:100%; padding:12px 14px; background-color:var(--input-bg); border:1px solid var(--input-border); border-radius:8px; color:var(--text-main);">
+              <label for="layerKeyword">2.검색어 (키워드)</label>
+              <input type="text" id="layerKeyword" placeholder="검색 키워드를 입력하세요 (예: 토크노믹스, 물류, 스마트팜)..." onkeyup="filterAdvisors()" style="width:100%; padding:12px 14px; background-color:var(--input-bg); border:1px solid var(--input-border); border-radius:8px; color:var(--text-main);">
             </div>
 
-            <!-- Layer 3: 경력 연차 분류 -->
+            <!-- Layer 3: 3.경력연차 -->
             <div>
-              <label for="layerExp">3번째 레이어: 경력 연차</label>
+              <label for="layerExp">3.경력연차</label>
               <select id="layerExp" onchange="filterAdvisors()">
                 <option value="0">전체 경력</option>
                 <option value="10">10년 이상</option>
@@ -738,16 +738,10 @@
             </div>
           </div>
 
-          <!-- Keyword Search Row & Execution Button -->
-          <div style="display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap;">
-            <div style="flex: 1; min-width: 260px;">
-              <label for="searchInput">통합 키워드 검색 (프로젝트명, 역할, 닉네임)</label>
-              <input type="text" id="searchInput" placeholder="검색어를 입력하세요 (예: 토크노믹스, 아키텍트, 물류, 스마트팜)..." onkeyup="filterAdvisors()">
-            </div>
-            <div style="display: flex; gap: 8px;">
-              <button type="button" class="btn-action-msg" style="padding: 12px 20px; font-weight: 700; white-space: nowrap;" onclick="filterAdvisors(true)">🔍 실시간 매칭 검색 실행</button>
-              <button type="button" class="btn-action-call" style="padding: 12px 16px; background-color: #475569; white-space: nowrap;" onclick="resetSearchFilters()">🔄 필터 초기화</button>
-            </div>
+          <!-- Execution & Reset Buttons Row -->
+          <div style="display: flex; gap: 10px; margin-top: 14px; justify-content: flex-end; flex-wrap: wrap;">
+            <button type="button" class="btn-action-msg" style="padding: 12px 24px; font-weight: 700;" onclick="filterAdvisors(true)">🔍 실시간 매칭 검색 실행</button>
+            <button type="button" class="btn-action-call" style="padding: 12px 20px; background-color: #475569;" onclick="resetSearchFilters()">🔄 필터 초기화</button>
           </div>
         </div>
 
