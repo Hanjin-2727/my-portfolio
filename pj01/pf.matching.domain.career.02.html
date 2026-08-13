@@ -604,14 +604,13 @@
         <div class="card-title">📝 어드바이저 도메인 경력 & 프로젝트 등록</div>
         <form id="advisorForm">
           
-          <!-- 1. 전문분야 (1차 분류 선택, 최대 5개 - 세부분야는 3.수행프로젝트에서 자동 추출) -->
+          <!-- 1. 전문분야 -->
           <div class="form-group full-width">
             <label for="mainIndustrySelect">
               1. 전문분야 (Sector) - <span style="color: #60a5fa;" id="categoryCount">최대 5개까지 선택 가능 (0/5)</span><span class="req">*</span>
             </label>
             
             <div style="display: flex; gap: 10px; margin-bottom: 8px; flex-wrap: wrap;">
-              <!-- 1차 전문분야 선택 -->
               <select id="mainIndustrySelect" style="flex: 1; min-width: 260px;" onchange="handleMainCategorySelect()">
                 <option value="" disabled selected>1차 전문분야 선택 (최대 5개)...</option>
                 <option value="금융">1. 금융 (Banking & Finance)</option>
@@ -624,10 +623,6 @@
 
               <button type="button" class="btn-action-msg" style="white-space: nowrap; padding: 12px 20px;" onclick="addCategoryFromSelect()">+ 분야 추가</button>
             </div>
-
-            <p style="font-size: 0.82rem; color: #94a3b8; margin-bottom: 12px;">
-              💡 <strong>안내:</strong> 세부 직무/기술 분류는 <strong>3번 '주요 수행 프로젝트'</strong> 작성 내용에서 AI/자동분석으로 자동 추출됩니다.
-            </p>
 
             <!-- Hidden Custom Industry Input -->
             <div id="etcCategoryDiv" style="display: none; margin-bottom: 12px;">
@@ -643,26 +638,38 @@
             </div>
           </div>
 
-          <div class="form-grid">
-            <!-- 2. 총 경력 연차 (Years) -->
-            <div class="form-group">
-              <label for="years">2. 총 경력 연차 (Years of Experience)<span class="req">*</span></label>
-              <input type="number" id="years" placeholder="예: 25 (년 단위)" min="0" required>
+          <!-- 2. 검색 키워드 (사용자가 자신에 대해 직접 5개까지 입력) -->
+          <div class="form-group full-width">
+            <label for="keywordInput">
+              2. 검색 키워드 - <span style="color: #60a5fa;" id="keywordCount">자신을 표현하는 대표 검색 키워드 (최대 5개) (0/5)</span><span class="req">*</span>
+            </label>
+            <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+              <input type="text" id="keywordInput" placeholder="대표 검색 키워드를 입력하세요 (예: 토크노믹스, 아키텍처, VC투자, 데이터분석)..." onkeypress="if(event.key==='Enter'){event.preventDefault();addSearchKeyword();}">
+              <button type="button" class="btn-action-msg" style="white-space: nowrap; padding: 12px 20px;" onclick="addSearchKeyword()">+ 키워드 추가</button>
+            </div>
+
+            <!-- Selected Keywords Chips Box -->
+            <div id="selectedKeywords" style="display: flex; flex-wrap: wrap; gap: 10px; min-height: 48px; padding: 12px; background-color: var(--input-bg); border: 1px solid var(--input-border); border-radius: 8px;">
+              <span style="color: var(--text-muted); font-size: 0.85rem; display: flex; align-items: center;" id="emptyKwNotice">등록된 검색 키워드가 없습니다. 키워드 입력 후 "+ 키워드 추가" 버튼을 눌러주세요 (최대 5개).</span>
             </div>
           </div>
 
-          <!-- 3. 프로젝트 및 수행 정보 (Projects Container) -->
+          <!-- 3. 주요 수행 프로젝트 (프로젝트명 ; 간단 설명 ; 역할) -->
           <div class="form-group full-width">
-            <label>3. 주요 수행 프로젝트 & 프로젝트에서 역할<span class="req">*</span></label>
+            <label>3. 주요 수행 프로젝트 (프로젝트명 ; 간단 설명 ; 역할)<span class="req">*</span></label>
             <div id="projectContainer">
               <div class="project-item">
-                <div class="form-grid">
+                <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
                   <div>
-                    <label>프로젝트명 (Project Name)</label>
+                    <label>프로젝트명 (Project Name)<span class="req">*</span></label>
                     <input type="text" class="proj-name" placeholder="예: 글로벌 DAO 토크노믹스 아키텍처 설계" required>
                   </div>
                   <div>
-                    <label>프로젝트에서 역할 (Role in Project)</label>
+                    <label>간단 설명 (Description)<span class="req">*</span></label>
+                    <input type="text" class="proj-desc" placeholder="예: 토큰 이코노미 메커니즘 및 분산 노드 아키텍처 설계" required>
+                  </div>
+                  <div>
+                    <label>역할 (Role in Project)<span class="req">*</span></label>
                     <input type="text" class="proj-role" placeholder="예: 총괄 리드 아키텍트 / 수석 어드바이저" required>
                   </div>
                 </div>
@@ -1006,20 +1013,78 @@
       btn.classList.add('active');
     }
 
-    // Add Dynamic Project Input
+    // Keyword Chips State (Max 5)
+    var selectedKeywordList = [];
+
+    function addSearchKeyword() {
+      var input = document.getElementById("keywordInput");
+      var text = input.value.trim();
+      if (!text) return;
+
+      if (selectedKeywordList.length >= 5) {
+        alert("검색 키워드는 최대 5개까지 입력할 수 있습니다.");
+        return;
+      }
+
+      if (selectedKeywordList.includes(text)) {
+        alert("이미 등록된 검색 키워드입니다.");
+        return;
+      }
+
+      selectedKeywordList.push(text);
+      renderKeywordChips();
+      input.value = "";
+    }
+
+    function removeKeywordChip(name) {
+      selectedKeywordList = selectedKeywordList.filter(item => item !== name);
+      renderKeywordChips();
+    }
+
+    function renderKeywordChips() {
+      var container = document.getElementById("selectedKeywords");
+      var countLabel = document.getElementById("keywordCount");
+
+      countLabel.innerText = `자신을 표현하는 대표 검색 키워드 (최대 5개) (${selectedKeywordList.length}/5)`;
+
+      if (selectedKeywordList.length === 0) {
+        container.innerHTML = `<span style="color: var(--text-muted); font-size: 0.85rem; display: flex; align-items: center;" id="emptyKwNotice">등록된 검색 키워드가 없습니다. 키워드 입력 후 "+ 키워드 추가" 버튼을 눌러주세요 (최대 5개).</span>`;
+        return;
+      }
+
+      container.innerHTML = "";
+      selectedKeywordList.forEach(item => {
+        var chip = document.createElement("div");
+        chip.className = "cat-chip";
+        chip.style.backgroundColor = "rgba(16, 185, 129, 0.2)";
+        chip.style.borderColor = "rgba(16, 185, 129, 0.4)";
+        chip.style.color = "#6ee7b7";
+        chip.innerHTML = `
+          <span># ${item}</span>
+          <button type="button" class="btn-remove-chip" style="color:#6ee7b7;" onclick="removeKeywordChip('${item}')" title="삭제">&times;</button>
+        `;
+        container.appendChild(chip);
+      });
+    }
+
+    // Add Dynamic Project Input (3 Fields: 프로젝트명 ; 간단 설명 ; 역할)
     function addProjectField() {
       var container = document.getElementById("projectContainer");
       var newItem = document.createElement("div");
       newItem.className = "project-item";
       newItem.innerHTML = `
-        <div class="form-grid">
+        <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
           <div>
-            <label>프로젝트명 (Project Name)</label>
+            <label>프로젝트명 (Project Name)<span class="req">*</span></label>
             <input type="text" class="proj-name" placeholder="예: 차세대 지식 그래프 파이프라인 구축" required>
           </div>
           <div>
-            <label>프로젝트에서 역할 (Role in Project)</label>
-            <input type="text" class="proj-role" placeholder="예: 전문 컨설턴트 / 아키텍트" required>
+            <label>간단 설명 (Description)<span class="req">*</span></label>
+            <input type="text" class="proj-desc" placeholder="예: 빅데이터 온톨로지 지식 맵 구축 및 실시간 쿼리 엔진 설계" required>
+          </div>
+          <div>
+            <label>역할 (Role in Project)<span class="req">*</span></label>
+            <input type="text" class="proj-role" placeholder="예: 수석 데이터 아키텍트" required>
           </div>
         </div>
       `;
