@@ -604,15 +604,15 @@
         <div class="card-title">📝 어드바이저 도메인 경력 & 프로젝트 등록</div>
         <form id="advisorForm">
           
-          <!-- 1. 전문분야 -->
+          <!-- 1. 전문분야 (최대 3개 선택) -->
           <div class="form-group full-width">
             <label for="mainIndustrySelect">
-              1. 전문분야 (Sector) - <span style="color: #60a5fa;" id="categoryCount">최대 5개까지 선택 가능 (0/5)</span><span class="req">*</span>
+              1. 전문분야 (Sector) - <span style="color: #60a5fa;" id="categoryCount">최대 3개까지 선택 가능 (0/3)</span><span class="req">*</span>
             </label>
             
             <div style="display: flex; gap: 10px; margin-bottom: 8px; flex-wrap: wrap;">
               <select id="mainIndustrySelect" style="flex: 1; min-width: 260px;" onchange="handleMainCategorySelect()">
-                <option value="" disabled selected>1차 전문분야 선택 (최대 5개)...</option>
+                <option value="" disabled selected>전문분야선택 (최대 3개)...</option>
                 <option value="금융">1. 금융 (Banking & Finance)</option>
                 <option value="제조">2. 제조 (Manufacturing)</option>
                 <option value="IT">3. IT (Information Technology)</option>
@@ -634,7 +634,7 @@
 
             <!-- Selected Category Tag Chips Box -->
             <div id="selectedCategories" style="display: flex; flex-wrap: wrap; gap: 10px; min-height: 48px; padding: 12px; background-color: var(--input-bg); border: 1px solid var(--input-border); border-radius: 8px;">
-              <span style="color: var(--text-muted); font-size: 0.85rem; display: flex; align-items: center;" id="emptyCatNotice">선택된 전문분야가 없습니다. 1차 전문분야를 선택 후 "+ 분야 추가" 버튼을 눌러주세요 (최대 5개).</span>
+              <span style="color: var(--text-muted); font-size: 0.85rem; display: flex; align-items: center;" id="emptyCatNotice">선택된 전문분야가 없습니다. 전문분야를 선택 후 "+ 분야 추가" 버튼을 눌러주세요 (최대 3개).</span>
             </div>
           </div>
 
@@ -971,8 +971,8 @@
     }
 
     function addCategoryChip(name) {
-      if (selectedCategoryList.length >= 5) {
-        alert("전문 분야는 최대 5개까지 선택할 수 있습니다.");
+      if (selectedCategoryList.length >= 3) {
+        alert("전문분야는 최대 3개까지 선택할 수 있습니다.");
         return;
       }
 
@@ -994,10 +994,10 @@
       var container = document.getElementById("selectedCategories");
       var countLabel = document.getElementById("categoryCount");
       
-      countLabel.innerText = `최대 5개까지 선택 가능 (${selectedCategoryList.length}/5)`;
+      countLabel.innerText = `최대 3개까지 선택 가능 (${selectedCategoryList.length}/3)`;
 
       if (selectedCategoryList.length === 0) {
-        container.innerHTML = `<span style="color: var(--text-muted); font-size: 0.85rem; display: flex; align-items: center;" id="emptyCatNotice">선택된 전문분야가 없습니다. 대분류와 세부분야를 선택 후 "+ 분야 추가" 버튼을 눌러주세요 (최대 5개).</span>`;
+        container.innerHTML = `<span style="color: var(--text-muted); font-size: 0.85rem; display: flex; align-items: center;" id="emptyCatNotice">선택된 전문분야가 없습니다. 전문분야를 선택 후 "+ 분야 추가" 버튼을 눌러주세요 (최대 3개).</span>`;
         return;
       }
 
