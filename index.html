@@ -1,84 +1,276 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advisor Data Input</title>
-    <style>
-        body { font-family: system-ui, sans-serif; line-height: 1.6; padding: 20px; max-width: 600px; margin: 0 auto; color: #333; background-color: #f9f9f9;}
-        .card { background: white; border: 1px solid #ddd; padding: 24px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        h2 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; margin-top: 0; }
-        .form-group { margin-bottom: 20px; }
-        label { display: block; font-weight: bold; margin-bottom: 5px; }
-        input[type="text"], input[type="number"], select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 1em; }
-        #etcInputDiv { display: none; margin-top: 10px; }
-        button { background: #3498db; color: white; border: none; padding: 12px 20px; font-size: 1em; border-radius: 4px; cursor: pointer; width: 100%; font-weight: bold;}
-        button:hover { background: #2980b9; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Hangjin Thomas Kim - Portfolio Hub">
+  <title>Hangjin Thomas Kim | Portfolio Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #090d16;
+      --card-bg: #121827;
+      --card-border: rgba(255, 255, 255, 0.08);
+      --card-hover-border: rgba(59, 130, 246, 0.5);
+      --primary: #3b82f6;
+      --primary-light: #60a5fa;
+      --accent: #6366f1;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --badge-completed-bg: rgba(16, 185, 129, 0.15);
+      --badge-completed-text: #34d399;
+      --badge-soon-bg: rgba(245, 158, 11, 0.15);
+      --badge-soon-text: #fbbf24;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.6;
+      background-image: 
+        radial-gradient(circle at 15% 20%, rgba(59, 130, 246, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 85% 80%, rgba(99, 102, 241, 0.08) 0%, transparent 40%);
+    }
+
+    header {
+      max-width: 1100px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 60px 24px 40px;
+    }
+
+    .profile-tag {
+      display: inline-block;
+      font-size: 0.875rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--primary-light);
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(2.2rem, 4vw, 3.2rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+      color: #ffffff;
+    }
+
+    .subtitle {
+      font-size: 1.125rem;
+      color: var(--text-muted);
+      max-width: 680px;
+    }
+
+    main {
+      max-width: 1100px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+      flex: 1;
+    }
+
+    .section-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background-color: var(--card-border);
+    }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 24px;
+    }
+
+    .project-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .project-card:hover {
+      border-color: var(--card-hover-border);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.5), 0 0 20px 0 rgba(59, 130, 246, 0.15);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .pj-number {
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--primary-light);
+    }
+
+    .badge {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+
+    .badge-completed {
+      background-color: var(--badge-completed-bg);
+      color: var(--badge-completed-text);
+    }
+
+    .badge-soon {
+      background-color: var(--badge-soon-bg);
+      color: var(--badge-soon-text);
+    }
+
+    .project-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: #ffffff;
+    }
+
+    .project-desc {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+      flex: 1;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--primary-light);
+      gap: 6px;
+    }
+
+    .card-footer svg {
+      width: 18px;
+      height: 18px;
+      transition: transform 0.2s ease;
+    }
+
+    .project-card:hover .card-footer svg {
+      transform: translateX(4px);
+    }
+
+    .card-disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .card-disabled:hover {
+      transform: none;
+      border-color: var(--card-border);
+      box-shadow: none;
+    }
+
+    footer {
+      border-top: 1px solid var(--card-border);
+      text-align: center;
+      padding: 30px;
+      color: var(--text-muted);
+      font-size: 0.875rem;
+    }
+  </style>
 </head>
 <body>
-    <div class="card">
-        <h2>Register Your Experience</h2>
-        <form>
-            
-            <!-- Career Category (Dropdown) -->
-            <div class="form-group">
-                <label for="category">Sector & Expertise</label>
-                <select id="category" onchange="toggleEtcInput()">
-                    <option value="" disabled selected>Select your primary field...</option>
-                    <option value="Software Engineering">1. Software Engineering</option>
-                    <option value="Blockchain & Web3">2. Blockchain & Web3</option>
-                    <option value="Smart Contract Programming">3. Smart Contract Programming</option>
-                    <option value="ZK Rollups & Crypto">4. ZK Rollups & Crypto</option>
-                    <option value="DAO Systems">5. DAO Systems</option>
-                    <option value="Lean Startup Methodology">6. Lean Startup Methodology</option>
-                    <option value="Venture Capital Investment">7. Venture Capital Investment</option>
-                    <option value="Database Design & Architecture">8. Database Design & Architecture</option>
-                    <option value="Private Cloud Networks">9. Private Cloud Networks</option>
-                    <option value="Corporate Growth Strategies">10. Corporate Growth Strategies</option>
-                    <option value="etc">11. etc (Other)</option>
-                </select>
-                
-                <!-- Hidden direct input box for 'etc' -->
-                <div id="etcInputDiv">
-                    <input type="text" id="etcCategory" placeholder="Please specify your sector...">
-                </div>
-            </div>
 
-            <!-- Years (Numbers Only) -->
-            <div class="form-group">
-                <label for="years">Years of Experience</label>
-                <input type="number" id="years" placeholder="e.g., 30" min="0">
-            </div>
+  <header>
+    <div class="profile-tag">Portfolio Hub</div>
+    <h1>Hangjin Thomas Kim</h1>
+    <p class="subtitle">IT Senior Advisor & Architect Portfolio Collection</p>
+  </header>
 
-            <!-- Project Name -->
-            <div class="form-group">
-                <label for="projectName">Major Project Name</label>
-                <input type="text" id="projectName" placeholder="e.g., Global DAO Tokenomics Structure">
-            </div>
+  <main>
+    <div class="section-title">Projects</div>
+    <div class="projects-grid">
 
-            <!-- Your Role -->
-            <div class="form-group">
-                <label for="projectRole">Your Role in Project</label>
-                <input type="text" id="projectRole" placeholder="e.g., Lead Architect / Consultant">
-            </div>
+      <!-- PJ01 Card -->
+      <a href="./pj01/" class="project-card">
+        <div class="card-header">
+          <span class="pj-number">PROJECT 01</span>
+          <span class="badge badge-completed">Completed</span>
+        </div>
+        <h2 class="project-title">Senior Advisor MVP</h2>
+        <p class="project-desc">도메인 커리어 매칭 및 도메인 전문가 어드바이저 MVP 포트폴리오 사이트</p>
+        <div class="card-footer">
+          <span>프로젝트 보기</span>
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+        </div>
+      </a>
 
-            <button type="button" onclick="alert('Data saved! (This is an MVP test)')">Submit Profile</button>
-        </form>
+      <!-- PJ02 Card -->
+      <div class="project-card card-disabled">
+        <div class="card-header">
+          <span class="pj-number">PROJECT 02</span>
+          <span class="badge badge-soon">Upcoming</span>
+        </div>
+        <h2 class="project-title">Project 02</h2>
+        <p class="project-desc">새로운 포트폴리오 프로젝트 준비 중입니다.</p>
+        <div class="card-footer" style="color: var(--text-muted);">
+          <span>준비 중</span>
+        </div>
+      </div>
+
+      <!-- PJ03 Card -->
+      <div class="project-card card-disabled">
+        <div class="card-header">
+          <span class="pj-number">PROJECT 03</span>
+          <span class="badge badge-soon">Upcoming</span>
+        </div>
+        <h2 class="project-title">Project 03</h2>
+        <p class="project-desc">새로운 포트폴리오 프로젝트 준비 중입니다.</p>
+        <div class="card-footer" style="color: var(--text-muted);">
+          <span>준비 중</span>
+        </div>
+      </div>
+
     </div>
+  </main>
 
-    <script>
-        function toggleEtcInput() {
-            var categorySelect = document.getElementById("category");
-            var etcDiv = document.getElementById("etcInputDiv");
-            
-            // Show the text input only if 'etc' is selected
-            if (categorySelect.value === "etc") {
-                etcDiv.style.display = "block";
-            } else {
-                etcDiv.style.display = "none";
-            }
-        }
-    </script>
+  <footer>
+    &copy; 2026 Hangjin Thomas Kim. All rights reserved.
+  </footer>
+
 </body>
 </html>
