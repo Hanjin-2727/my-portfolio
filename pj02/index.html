@@ -698,6 +698,173 @@
 
           <button type="button" class="btn-primary" onclick="submitRentalRequest()">맞춤 자전거 대여 매칭 신청하기</button>
         </form>
+
+        <!-- Matched Candidate Bikes Result Box (Shows 5 Candidate Bikes when matching is requested) -->
+        <div id="matchedBikeResults" style="display: none; margin-top: 24px; animation: fadeIn 0.4s ease-in-out;">
+          <div style="padding: 16px; background-color: rgba(6, 182, 212, 0.15); border: 1px solid rgba(6, 182, 212, 0.3); border-radius: 12px; margin-bottom: 20px;">
+            <h3 style="color: var(--primary); font-size: 1.15rem; margin-bottom: 4px; display: flex; align-items: center; gap: 8px;">
+              <span>🚲 AI 매칭 추천 후보 자전거 (5개 라인업)</span>
+            </h3>
+            <p style="font-size: 0.88rem; color: #cbd5e1;">
+              고객님의 <strong>체형(신장/Inseam)</strong> 및 <strong>선택 예산</strong>에 가장 적합한 5대의 후보 자전거 스펙 정보입니다. 마음에 드는 자전거를 선택해 보세요!
+            </p>
+          </div>
+
+          <div class="candidate-bike-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px;">
+            
+            <!-- Bike 1 -->
+            <div class="card" style="margin-bottom: 0; padding: 20px; border-color: rgba(6, 182, 212, 0.5);">
+              <div style="width: 100%; height: 160px; background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 14px; border: 1px solid var(--card-border); position: relative; overflow: hidden;">
+                <span style="font-size: 4.5rem;">🚴‍♂️</span>
+                <span style="position: absolute; top: 10px; right: 10px; background-color: var(--primary); color: #0f172a; font-weight: 700; font-size: 0.75rem; padding: 3px 8px; border-radius: 12px;">BEST MATCH</span>
+              </div>
+              <h4 style="color: #ffffff; font-size: 1.1rem; margin-bottom: 6px;">1. Specialized Allez Elite</h4>
+              <span style="font-size: 0.8rem; color: var(--primary); background-color: rgba(6, 182, 212, 0.15); padding: 2px 8px; border-radius: 4px;">로드자전거 (Road)</span>
+              
+              <div style="margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--card-border); font-size: 0.88rem;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                  <span style="color: var(--text-muted);">⚙️ 구동계 (Drivetrain):</span>
+                  <strong style="color: #ffffff;">Shimano Sora (9단)</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                  <span style="color: var(--text-muted);">⚖️ 무게 (Weight):</span>
+                  <strong style="color: #34d399;">9.1 kg</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                  <span style="color: var(--text-muted);">📐 프레임 사이즈:</span>
+                  <strong style="color: #ffffff;">M 사이즈 (54cm)</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                  <span style="color: var(--text-muted);">💵 월 대여료:</span>
+                  <strong style="color: var(--primary); font-size: 1.05rem;">$180 / 월</strong>
+                </div>
+              </div>
+              
+              <button type="button" class="btn-primary" onclick="selectCandidateBike('Specialized Allez Elite', '$180')">이 자전거로 최종 선택 및 대여 진행</button>
+            </div>
+
+            <!-- Bike 2 -->
+            <div class="card" style="margin-bottom: 0; padding: 20px;">
+              <div style="width: 100%; height: 160px; background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 14px; border: 1px solid var(--card-border);">
+                <span style="font-size: 4.5rem;">🚵‍♂️</span>
+              </div>
+              <h4 style="color: #ffffff; font-size: 1.1rem; margin-bottom: 6px;">2. Trek Marlin 7</h4>
+              <span style="font-size: 0.8rem; color: #34d399; background-color: rgba(52, 211, 153, 0.15); padding: 2px 8px; border-radius: 4px;">마운틴자전거 (MTB)</span>
+              
+              <div style="margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--card-border); font-size: 0.88rem;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                  <span style="color: var(--text-muted);">⚙️ 구동계 (Drivetrain):</span>
+                  <strong style="color: #ffffff;">Shimano Deore (10단)</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                  <span style="color: var(--text-muted);">⚖️ 무게 (Weight):</span>
+                  <strong style="color: #34d399;">12.8 kg</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                  <span style="color: var(--text-muted);">📐 프레임 사이즈:</span>
+                  <strong style="color: #ffffff;">M 사이즈 (17.5")</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                  <span style="color: var(--text-muted);">💵 월 대여료:</span>
+                  <strong style="color: var(--primary); font-size: 1.05rem;">$160 / 월</strong>
+                </div>
+              </div>
+              
+              <button type="button" class="btn-primary" style="background-color: #334155; color: white;" onclick="selectCandidateBike('Trek Marlin 7', '$160')">이 자전거로 최종 선택 및 대여 진행</button>
+            </div>
+
+            <!-- Bike 3 -->
+            <div class="card" style="margin-bottom: 0; padding: 20px;">
+              <div style="width: 100%; height: 160px; background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 14px; border: 1px solid var(--card-border);">
+                <span style="font-size: 4.5rem;">🚲</span>
+              </div>
+              <h4 style="color: #ffffff; font-size: 1.1rem; margin-bottom: 6px;">3. Giant Escape 2 Disc</h4>
+              <span style="font-size: 0.8rem; color: #f59e0b; background-color: rgba(245, 158, 11, 0.15); padding: 2px 8px; border-radius: 4px;">하이브리드 (Hybrid)</span>
+              
+              <div style="margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--card-border); font-size: 0.88rem;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                  <span style="color: var(--text-muted);">⚙️ 구동계 (Drivetrain):</span>
+                  <strong style="color: #ffffff;">Shimano Altus (8단)</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                  <span style="color: var(--text-muted);">⚖️ 무게 (Weight):</span>
+                  <strong style="color: #34d399;">10.5 kg</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                  <span style="color: var(--text-muted);">📐 프레임 사이즈:</span>
+                  <strong style="color: #ffffff;">M 사이즈 (50cm)</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                  <span style="color: var(--text-muted);">💵 월 대여료:</span>
+                  <strong style="color: var(--primary); font-size: 1.05rem;">$140 / 월</strong>
+                </div>
+              </div>
+              
+              <button type="button" class="btn-primary" style="background-color: #334155; color: white;" onclick="selectCandidateBike('Giant Escape 2 Disc', '$140')">이 자전거로 최종 선택 및 대여 진행</button>
+            </div>
+
+            <!-- Bike 4 -->
+            <div class="card" style="margin-bottom: 0; padding: 20px;">
+              <div style="width: 100%; height: 160px; background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 14px; border: 1px solid var(--card-border);">
+                <span style="font-size: 4.5rem;">🛴</span>
+              </div>
+              <h4 style="color: #ffffff; font-size: 1.1rem; margin-bottom: 6px;">4. Tern Verge P10</h4>
+              <span style="font-size: 0.8rem; color: #a855f7; background-color: rgba(168, 85, 247, 0.15); padding: 2px 8px; border-radius: 4px;">접이식 미니벨로 (Minivelo)</span>
+              
+              <div style="margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--card-border); font-size: 0.88rem;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                  <span style="color: var(--text-muted);">⚙️ 구동계 (Drivetrain):</span>
+                  <strong style="color: #ffffff;">Shimano Deore (10단)</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                  <span style="color: var(--text-muted);">⚖️ 무게 (Weight):</span>
+                  <strong style="color: #34d399;">11.7 kg</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                  <span style="color: var(--text-muted);">📐 프레임 사이즈:</span>
+                  <strong style="color: #ffffff;">One Size (접이식)</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                  <span style="color: var(--text-muted);">💵 월 대여료:</span>
+                  <strong style="color: var(--primary); font-size: 1.05rem;">$170 / 월</strong>
+                </div>
+              </div>
+              
+              <button type="button" class="btn-primary" style="background-color: #334155; color: white;" onclick="selectCandidateBike('Tern Verge P10', '$170')">이 자전거로 최종 선택 및 대여 진행</button>
+            </div>
+
+            <!-- Bike 5 -->
+            <div class="card" style="margin-bottom: 0; padding: 20px;">
+              <div style="width: 100%; height: 160px; background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 14px; border: 1px solid var(--card-border);">
+                <span style="font-size: 4.5rem;">🚴‍♀️</span>
+              </div>
+              <h4 style="color: #ffffff; font-size: 1.1rem; margin-bottom: 6px;">5. Cannondale Topstone 3</h4>
+              <span style="font-size: 0.8rem; color: #ec4899; background-color: rgba(236, 72, 153, 0.15); padding: 2px 8px; border-radius: 4px;">그래블/프리미엄 로드 (Gravel)</span>
+              
+              <div style="margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--card-border); font-size: 0.88rem;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                  <span style="color: var(--text-muted);">⚙️ 구동계 (Drivetrain):</span>
+                  <strong style="color: #ffffff;">Shimano Sora (9단)</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                  <span style="color: var(--text-muted);">⚖️ 무게 (Weight):</span>
+                  <strong style="color: #34d399;">9.8 kg</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                  <span style="color: var(--text-muted);">📐 프레임 사이즈:</span>
+                  <strong style="color: #ffffff;">M 사이즈 (54cm)</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                  <span style="color: var(--text-muted);">💵 월 대여료:</span>
+                  <strong style="color: var(--primary); font-size: 1.05rem;">$210 / 월</strong>
+                </div>
+              </div>
+              
+              <button type="button" class="btn-primary" style="background-color: #334155; color: white;" onclick="selectCandidateBike('Cannondale Topstone 3', '$210')">이 자전거로 최종 선택 및 대여 진행</button>
+            </div>
+
+          </div>
+        </div>
       </div>
     </section>
 
@@ -953,9 +1120,20 @@
       }
     }
 
-    // Form Submission
+    // Form Submission & Candidate Bikes Matching Action
     function submitRentalRequest() {
-      showToast("외국인 전용 자전거 장기 대여 매칭 신청이 성공적으로 접수되었습니다!");
+      var resultBox = document.getElementById("matchedBikeResults");
+      if (resultBox) {
+        resultBox.style.display = "block";
+        resultBox.scrollIntoView({ behavior: 'smooth' });
+      }
+      showToast("AI 체형 및 예산 분석 완료! 5대의 맞춤 후보 자전거가 아래에 추천되었습니다.");
+    }
+
+    function selectCandidateBike(bikeName, price) {
+      alert("[" + bikeName + " (" + price + "/월)] 자전거가 성공적으로 선택되었습니다!\n\n이어서 🛠️ 부가 서비스(배송 위치, 헬멧/수리키트) 및 🤖 AI 스마트 계약서를 확인해 주세요.");
+      switchTab('tab-addons', document.querySelectorAll('.tab-btn')[1]);
+      showToast("[" + bikeName + "] 자전거 선택 완료!");
     }
 
     // Add-on Functions
