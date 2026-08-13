@@ -298,21 +298,30 @@
       background-color: var(--primary-hover);
     }
 
-    /* Tab 2: Search UI */
-    .search-bar-container {
-      display: flex;
-      gap: 12px;
+    /* 3-Layer Filter Box in Search */
+    .filter-layer-box {
+      background-color: #0f172a;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 20px;
       margin-bottom: 24px;
-      flex-wrap: wrap;
     }
 
-    .search-input-wrapper {
-      flex: 1;
-      min-width: 260px;
+    .layer-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--primary-light);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
 
-    .search-filter-select {
-      width: 180px;
+    .layer-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 16px;
     }
 
     .advisor-list {
@@ -324,7 +333,7 @@
       background-color: #0f172a;
       border: 1px solid var(--card-border);
       border-radius: 12px;
-      padding: 20px;
+      padding: 22px;
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
@@ -339,11 +348,30 @@
     }
 
     .advisor-info h3 {
-      font-size: 1.15rem;
+      font-size: 1.2rem;
       font-weight: 700;
       color: #ffffff;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
     }
+
+    .layer-badges {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 6px;
+      margin-bottom: 8px;
+    }
+
+    .layer-badge {
+      font-size: 0.78rem;
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-weight: 600;
+    }
+
+    .lb-domain { background-color: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
+    .lb-dept { background-color: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .lb-exp { background-color: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
 
     .advisor-tags {
       display: flex;
@@ -354,8 +382,8 @@
 
     .tag-chip {
       font-size: 0.8rem;
-      background-color: rgba(59, 130, 246, 0.15);
-      color: var(--primary);
+      background-color: rgba(255, 255, 255, 0.05);
+      color: var(--text-muted);
       padding: 3px 10px;
       border-radius: 12px;
       font-weight: 500;
@@ -546,7 +574,7 @@
     <div class="header-container">
       <span class="badge-sub">Senior Advisor System MVP</span>
       <h1>II. 화면설계 (UI/UX Architecture)</h1>
-      <p class="desc">도메인 경력 등록부터 검색, 커뮤니케이션, 평가까지의 대화형 화면 구성 프로토타입</p>
+      <p class="desc">도메인 경력 등록부터 계층형 3단 레이어 검색, 커뮤니케이션, 평가까지의 대화형 화면 프로토타입</p>
     </div>
   </header>
 
@@ -557,7 +585,7 @@
         <span>📝 1. 입력 화면</span>
       </button>
       <button class="tab-btn" onclick="switchTab('tab-search', this)">
-        <span>🔍 2. 검색 화면</span>
+        <span>🔍 2. 검색 화면 (3단 레이어)</span>
       </button>
       <button class="tab-btn" onclick="switchTab('tab-comm', this)">
         <span>💬 3. 커뮤니케이션</span>
@@ -648,30 +676,78 @@
       </div>
     </section>
 
-    <!-- 2. 검색 화면 (Search & Filter) -->
+    <!-- 2. 검색 화면 (3단 레이어 매칭 검색) -->
     <section id="tab-search" class="tab-content">
       <div class="card">
-        <div class="card-title">🔍 어드바이저 검색 및 도메인/경력 필터링</div>
+        <div class="card-title">🔍 어드바이저 3단 레이어 조건검색 (도메인/사업부문/경력)</div>
         
-        <div class="search-bar-container">
-          <div class="search-input-wrapper">
-            <input type="text" id="searchInput" placeholder="분야, 프로젝트명, 역할, 이름으로 검색..." onkeyup="filterAdvisors()">
+        <!-- 3-Layer Filter Form Box -->
+        <div class="filter-layer-box">
+          <div class="layer-title">🎯 계층별 맞춤 필터 레이어 (3-Layer Search Filter)</div>
+          
+          <div class="layer-grid">
+            <!-- Layer 1: 도메인 / 산업분야 분류 -->
+            <div>
+              <label for="layerDomain">1번째 레이어: 도메인 (산업분야)</label>
+              <select id="layerDomain" onchange="filterAdvisors()">
+                <option value="all">전체 산업분야</option>
+                <option value="IT/SW">ICT / IT & 소프트웨어</option>
+                <option value="Finance/Web3">금융 / 핀테크 & Web3</option>
+                <option value="Semiconductor/Energy">제조 / 반도체 & 에너지</option>
+                <option value="Bio/Healthcare">바이오 & 헬스케어</option>
+                <option value="Consulting">전문 서비스 & 컨설팅</option>
+              </select>
+            </div>
+
+            <!-- Layer 2: 사업 / 기술부문 분류 -->
+            <div>
+              <label for="layerDept">2번째 레이어: 사업 / 기술부문</label>
+              <select id="layerDept" onchange="filterAdvisors()">
+                <option value="all">전체 부문 (기술/기획/영업/회계)</option>
+                <option value="Tech/Engineering">💻 기술 / R&D / 엔지니어링</option>
+                <option value="Strategy/Planning">💼 경영 / 기획 / 전략</option>
+                <option value="Sales/BD">📈 영업 / 마케팅 / BD</option>
+                <option value="Finance/VC">💰 재무 / 회계 / VC 투자</option>
+                <option value="HR/Legal">⚙️ 운영 / 인사 / 법무</option>
+              </select>
+            </div>
+
+            <!-- Layer 3: 경력 연차 분류 -->
+            <div>
+              <label for="layerExp">3번째 레이어: 경력 연차</label>
+              <select id="layerExp" onchange="filterAdvisors()">
+                <option value="0">전체 경력</option>
+                <option value="5">5년 이상 (중니어/시니어)</option>
+                <option value="10">10년 이상 (수석 어드바이저)</option>
+                <option value="15">15년 이상 (VP / C-Level)</option>
+                <option value="20">20년 이상 (마스터 / 상임 고문)</option>
+              </select>
+            </div>
           </div>
-          <select class="search-filter-select" id="expFilter" onchange="filterAdvisors()">
-            <option value="0">경력 전체보기</option>
-            <option value="5">5년 이상</option>
-            <option value="10">10년 이상</option>
-            <option value="20">20년 이상</option>
-          </select>
+
+          <!-- Keyword Search Row -->
+          <div>
+            <label for="searchInput">통합 키워드 검색 (프로젝트명, 역할, 성함)</label>
+            <input type="text" id="searchInput" placeholder="검색어를 입력하세요 (예: 토크노믹스, 아키텍트, 김항진)..." onkeyup="filterAdvisors()">
+          </div>
         </div>
 
+        <!-- Advisor Results List -->
         <div class="advisor-list" id="advisorList">
+          
           <!-- Advisor Card 1 -->
-          <div class="advisor-card" data-category="Software Engineering Blockchain Smart Contract DAO ZK" data-exp="25">
+          <div class="advisor-card" data-domain="IT/SW Finance/Web3" data-dept="Tech/Engineering Strategy/Planning" data-exp="25">
             <div class="advisor-info">
               <h3>김항진 수석 어드바이저 <span style="font-size: 0.85rem; color: #34d399; margin-left: 8px;">★ 4.9 (28건 평가)</span></h3>
-              <p style="font-size: 0.9rem; color: var(--text-muted);">총 경력: 25년 | 전문 분야 (5개 선택됨)</p>
-              <p style="font-size: 0.85rem; color: #cbd5e1; margin-top: 4px;">대표 프로젝트: 글로벌 DAO 토크노믹스 설계 (리드 아키텍트)</p>
+              
+              <div class="layer-badges">
+                <span class="layer-badge lb-domain">1단: ICT/IT & Web3</span>
+                <span class="layer-badge lb-dept">2단: 기술 R&D / 수석 아키텍트</span>
+                <span class="layer-badge lb-exp">3단: 총 경력 25년 (마스터)</span>
+              </div>
+
+              <p style="font-size: 0.85rem; color: #cbd5e1; margin-top: 6px;">대표 프로젝트: 글로벌 DAO 토크노믹스 및 분산 아키텍처 설계 (총괄 리드)</p>
+              
               <div class="advisor-tags">
                 <span class="tag-chip">Software Engineering</span>
                 <span class="tag-chip">Blockchain & Web3</span>
@@ -687,14 +763,22 @@
           </div>
 
           <!-- Advisor Card 2 -->
-          <div class="advisor-card" data-category="Venture Capital Investment Growth Strategy" data-exp="12">
+          <div class="advisor-card" data-domain="Finance/Web3 Consulting" data-dept="Finance/VC Strategy/Planning" data-exp="12">
             <div class="advisor-info">
               <h3>이진우 전문 파트너 <span style="font-size: 0.85rem; color: #34d399; margin-left: 8px;">★ 4.8 (15건 평가)</span></h3>
-              <p style="font-size: 0.9rem; color: var(--text-muted);">총 경력: 12년 | 주 분야: VC 투자 & 기업 성장 전략</p>
-              <p style="font-size: 0.85rem; color: #cbd5e1; margin-top: 4px;">대표 프로젝트: Series-B 스타트업 밸류에이션 및 투자 유치 총괄</p>
+              
+              <div class="layer-badges">
+                <span class="layer-badge lb-domain">1단: 금융 / 핀테크 & 컨설팅</span>
+                <span class="layer-badge lb-dept">2단: 재무 / VC 투자 & 전략</span>
+                <span class="layer-badge lb-exp">3단: 총 경력 12년 (수석)</span>
+              </div>
+
+              <p style="font-size: 0.85rem; color: #cbd5e1; margin-top: 6px;">대표 프로젝트: Series-B 스타트업 밸류에이션 및 투자 유치 총괄</p>
+              
               <div class="advisor-tags">
                 <span class="tag-chip">Venture Capital</span>
                 <span class="tag-chip">Growth Strategy</span>
+                <span class="tag-chip">Valuation</span>
               </div>
             </div>
             <div class="advisor-actions">
@@ -702,6 +786,32 @@
               <button class="btn-action-call" onclick="startComm('이진우 전문 파트너', 'call')">📞 컨퍼런스 콜</button>
             </div>
           </div>
+
+          <!-- Advisor Card 3 -->
+          <div class="advisor-card" data-domain="Semiconductor/Energy IT/SW" data-dept="Tech/Engineering Sales/BD" data-exp="18">
+            <div class="advisor-info">
+              <h3>박민수 수석 연구위원 <span style="font-size: 0.85rem; color: #34d399; margin-left: 8px;">★ 4.9 (42건 평가)</span></h3>
+              
+              <div class="layer-badges">
+                <span class="layer-badge lb-domain">1단: 제조 / 반도체 & 에너지</span>
+                <span class="layer-badge lb-dept">2단: 기술 R&D / 해외 BD</span>
+                <span class="layer-badge lb-exp">3단: 총 경력 18년 (C-Level)</span>
+              </div>
+
+              <p style="font-size: 0.85rem; color: #cbd5e1; margin-top: 6px;">대표 프로젝트: 차세대 반도체 공정 자동화 및 지식 그래프 기반 데이터 플랫폼</p>
+              
+              <div class="advisor-tags">
+                <span class="tag-chip">Semiconductor</span>
+                <span class="tag-chip">Database Architecture</span>
+                <span class="tag-chip">R&D Lead</span>
+              </div>
+            </div>
+            <div class="advisor-actions">
+              <button class="btn-action-msg" onclick="startComm('박민수 수석 연구위원', 'msg')">💬 메시지</button>
+              <button class="btn-action-call" onclick="startComm('박민수 수석 연구위원', 'call')">📞 컨퍼런스 콜</button>
+            </div>
+          </div>
+
         </div>
       </div>
     </section>
@@ -910,17 +1020,27 @@
       showToast("어드바이저 전문 분야 (" + selectedCategoryList.length + "개) 및 프로젝트 프로필이 성공적으로 저장되었습니다!");
     }
 
-    // Advisor Filter
+    // 3-Layer Advisor Search & Filtering Logic
     function filterAdvisors() {
+      var domainFilter = document.getElementById("layerDomain").value;
+      var deptFilter = document.getElementById("layerDept").value;
+      var minExp = parseInt(document.getElementById("layerExp").value) || 0;
       var query = document.getElementById("searchInput").value.toLowerCase();
-      var minExp = parseInt(document.getElementById("expFilter").value) || 0;
+
       var cards = document.querySelectorAll(".advisor-card");
 
       cards.forEach(card => {
-        var text = card.innerText.toLowerCase();
+        var cardDomain = card.getAttribute("data-domain") || "";
+        var cardDept = card.getAttribute("data-dept") || "";
         var exp = parseInt(card.getAttribute("data-exp")) || 0;
+        var text = card.innerText.toLowerCase();
 
-        if (text.includes(query) && exp >= minExp) {
+        var matchDomain = (domainFilter === "all") || cardDomain.includes(domainFilter);
+        var matchDept = (deptFilter === "all") || cardDept.includes(deptFilter);
+        var matchExp = exp >= minExp;
+        var matchText = !query || text.includes(query);
+
+        if (matchDomain && matchDept && matchExp && matchText) {
           card.style.display = "flex";
         } else {
           card.style.display = "none";
