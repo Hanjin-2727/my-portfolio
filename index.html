@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advisor Data Input</title>
+    <style>
+        body { font-family: system-ui, sans-serif; line-height: 1.6; padding: 20px; max-width: 600px; margin: 0 auto; color: #333; background-color: #f9f9f9;}
+        .card { background: white; border: 1px solid #ddd; padding: 24px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h2 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; margin-top: 0; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; }
+        input[type="text"], input[type="number"], select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 1em; }
+        #etcInputDiv { display: none; margin-top: 10px; }
+        button { background: #3498db; color: white; border: none; padding: 12px 20px; font-size: 1em; border-radius: 4px; cursor: pointer; width: 100%; font-weight: bold;}
+        button:hover { background: #2980b9; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>Register Your Experience</h2>
+        <form>
+            
+            <!-- Career Category (Dropdown) -->
+            <div class="form-group">
+                <label for="category">Sector & Expertise</label>
+                <select id="category" onchange="toggleEtcInput()">
+                    <option value="" disabled selected>Select your primary field...</option>
+                    <option value="Software Engineering">1. Software Engineering</option>
+                    <option value="Blockchain & Web3">2. Blockchain & Web3</option>
+                    <option value="Smart Contract Programming">3. Smart Contract Programming</option>
+                    <option value="ZK Rollups & Crypto">4. ZK Rollups & Crypto</option>
+                    <option value="DAO Systems">5. DAO Systems</option>
+                    <option value="Lean Startup Methodology">6. Lean Startup Methodology</option>
+                    <option value="Venture Capital Investment">7. Venture Capital Investment</option>
+                    <option value="Database Design & Architecture">8. Database Design & Architecture</option>
+                    <option value="Private Cloud Networks">9. Private Cloud Networks</option>
+                    <option value="Corporate Growth Strategies">10. Corporate Growth Strategies</option>
+                    <option value="etc">11. etc (Other)</option>
+                </select>
+                
+                <!-- Hidden direct input box for 'etc' -->
+                <div id="etcInputDiv">
+                    <input type="text" id="etcCategory" placeholder="Please specify your sector...">
+                </div>
+            </div>
+
+            <!-- Years (Numbers Only) -->
+            <div class="form-group">
+                <label for="years">Years of Experience</label>
+                <input type="number" id="years" placeholder="e.g., 30" min="0">
+            </div>
+
+            <!-- Project Name -->
+            <div class="form-group">
+                <label for="projectName">Major Project Name</label>
+                <input type="text" id="projectName" placeholder="e.g., Global DAO Tokenomics Structure">
+            </div>
+
+            <!-- Your Role -->
+            <div class="form-group">
+                <label for="projectRole">Your Role in Project</label>
+                <input type="text" id="projectRole" placeholder="e.g., Lead Architect / Consultant">
+            </div>
+
+            <button type="button" onclick="alert('Data saved! (This is an MVP test)')">Submit Profile</button>
+        </form>
+    </div>
+
+    <script>
+        function toggleEtcInput() {
+            var categorySelect = document.getElementById("category");
+            var etcDiv = document.getElementById("etcInputDiv");
+            
+            // Show the text input only if 'etc' is selected
+            if (categorySelect.value === "etc") {
+                etcDiv.style.display = "block";
+            } else {
+                etcDiv.style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>
