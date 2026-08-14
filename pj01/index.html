@@ -4730,12 +4730,18 @@
       }
     });
 
-    // Initialize Advisor List & Contract Metrics on Load
-    document.addEventListener("DOMContentLoaded", function() {
+    // Initialize Advisor List & Contract Metrics on Load (Immediate execution fallback for Vercel/CDN)
+    function initApp() {
       renderAdvisorList();
       calcContractMetrics();
       updateContractPartyDOM();
-    });
+    }
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", initApp);
+    } else {
+      initApp();
+    }
   </script>
 </body>
 </html>
