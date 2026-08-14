@@ -1,0 +1,21 @@
+{
+  "name": "LCM 우리단지 ON - 임대아파트 올인원 라이프 매니저",
+  "short_name": "우리단지ON",
+  "description": "임대아파트 및 행복주택 입주민을 위한 스마트 안심 PWA 커뮤니티 플랫폼",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0b1329",
+  "theme_color": "#0d9488",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='128' fill='%230d9488'/%3E%3Cpath d='M256 120L120 230v170a16 16 0 0016 16h80v-96a16 16 0 0116-16h48a16 16 0 0116 16v96h80a16 16 0 0016-16V230L256 120z' fill='%23ffffff'/%3E%3Ccircle cx='256' cy='180' r='24' fill='%23fef08a'/%3E%3C/svg%3E",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='128' fill='%230d9488'/%3E%3Cpath d='M256 120L120 230v170a16 16 0 0016 16h80v-96a16 16 0 0116-16h48a16 16 0 0116 16v96h80a16 16 0 0016-16V230L256 120z' fill='%23ffffff'/%3E%3Ccircle cx='256' cy='180' r='24' fill='%23fef08a'/%3E%3C/svg%3E",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}

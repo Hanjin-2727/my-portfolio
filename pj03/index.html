@@ -1,0 +1,1317 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="description" content="LCM 우리단지 ON - 임대아파트 & 행복주택 입주민 맞춤형 안심 PWA 커뮤니티 플랫폼">
+  <meta name="theme-color" content="#0d9488">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="우리단지ON">
+  <link rel="manifest" href="manifest.json">
+  
+  <title>우리단지 ON (LCM) | 임대아파트 올인원 라이프 매니저</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #0d9488;
+      --primary-dark: #0f766e;
+      --primary-light: #2dd4bf;
+      --primary-soft: rgba(13, 148, 136, 0.12);
+      
+      --accent-sun: #f59e0b;
+      --accent-sun-soft: rgba(245, 158, 11, 0.15);
+      --danger: #ef4444;
+      --danger-soft: rgba(239, 68, 68, 0.15);
+      --success: #10b981;
+      
+      --bg-dark: #090e1a;
+      --card-dark: #111827;
+      --card-dark-sub: #1f293d;
+      --border-dark: rgba(255, 255, 255, 0.09);
+      
+      --text-main: #f8fafc;
+      --text-sub: #94a3b8;
+      --text-muted: #64748b;
+      
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --radius-full: 9999px;
+      
+      --shadow-card: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
+      --font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+    }
+
+    /* 시니어 큰글씨 고대비 모드 */
+    body.senior-mode {
+      --bg-dark: #000000;
+      --card-dark: #121212;
+      --card-dark-sub: #222222;
+      --border-dark: #fbbf24;
+      --text-main: #ffffff;
+      --text-sub: #fef08a;
+      --primary: #f59e0b;
+      --primary-light: #fde047;
+      --primary-soft: rgba(245, 158, 11, 0.25);
+      font-size: 19px !important;
+    }
+
+    body.senior-mode .senior-hide { display: none !important; }
+    body.senior-mode .btn-action { height: 60px; font-size: 1.15rem; font-weight: 800; border: 2px solid #fbbf24; }
+    body.senior-mode .badge { font-size: 0.95rem; padding: 6px 12px; }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: var(--font-family);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: #050811;
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      overflow-x: hidden;
+      padding: 0;
+    }
+
+    /* PWA 폰 쉘 레이아웃 (반응형) */
+    .app-viewport {
+      width: 100%;
+      max-width: 480px;
+      min-height: 100vh;
+      background-color: var(--bg-dark);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
+      padding-bottom: 85px;
+    }
+
+    @media (min-width: 1024px) {
+      body {
+        padding: 30px 20px;
+        background: radial-gradient(circle at 10% 20%, #0d2238 0%, #050811 90%);
+      }
+      .app-viewport {
+        border-radius: 32px;
+        border: 4px solid #1e293b;
+        min-height: 880px;
+        height: 92vh;
+        overflow-y: auto;
+      }
+      .desktop-sidebar-info {
+        display: block !important;
+      }
+    }
+
+    /* 데스크탑 프리뷰 설명 패널 */
+    .desktop-sidebar-info {
+      display: none;
+      width: 380px;
+      margin-left: 30px;
+      color: var(--text-main);
+    }
+    .desktop-info-card {
+      background: var(--card-dark);
+      border: 1px solid var(--border-dark);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-card);
+    }
+    .desktop-info-card h3 {
+      font-size: 1.25rem;
+      color: var(--primary-light);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .desktop-info-card p {
+      font-size: 0.9rem;
+      color: var(--text-sub);
+      line-height: 1.6;
+      margin-bottom: 14px;
+    }
+
+    /* Top Bar */
+    .top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(9, 14, 26, 0.9);
+      backdrop-filter: blur(16px);
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-dark);
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .brand-logo {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #042f2e;
+      font-size: 1.2rem;
+      font-weight: 800;
+    }
+    .brand-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: #fff;
+    }
+    .brand-sub {
+      font-size: 0.72rem;
+      color: var(--primary-light);
+      font-weight: 500;
+      display: block;
+    }
+
+    /* Mode Pill Switches */
+    .mode-switch-group {
+      display: flex;
+      background: var(--card-dark-sub);
+      padding: 3px;
+      border-radius: var(--radius-full);
+      gap: 2px;
+      border: 1px solid var(--border-dark);
+    }
+    .mode-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 5px 10px;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .mode-btn.active {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(13, 148, 136, 0.4);
+    }
+    body.senior-mode .mode-btn.active {
+      background: #f59e0b;
+      color: #000;
+    }
+
+    /* Main Content Area */
+    .content-area {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    /* Live Life-Signal Banner */
+    .life-signal-card {
+      background: linear-gradient(135deg, #0f2c3d, #0b1a2e);
+      border: 1px solid rgba(45, 212, 191, 0.3);
+      border-radius: var(--radius-lg);
+      padding: 18px;
+      position: relative;
+      overflow: hidden;
+    }
+    .life-signal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .pulse-dot {
+      width: 10px;
+      height: 10px;
+      background-color: var(--success);
+      border-radius: 50%;
+      display: inline-block;
+      box-shadow: 0 0 0 rgba(16, 185, 129, 0.7);
+      animation: pulseAnimation 2s infinite;
+    }
+    @keyframes pulseAnimation {
+      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+    .signal-status-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #34d399;
+      background: rgba(16, 185, 129, 0.15);
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+    }
+    .senior-checkin-btn {
+      width: 100%;
+      background: linear-gradient(135deg, var(--primary), #0f766e);
+      border: none;
+      color: #fff;
+      padding: 14px;
+      border-radius: var(--radius-md);
+      font-size: 1.05rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(13, 148, 136, 0.35);
+      transition: all 0.2s;
+    }
+    .senior-checkin-btn:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.1);
+    }
+    .senior-checkin-btn:active {
+      transform: scale(0.98);
+    }
+
+    /* Quick Action Smart Pass (공동현관문 & NFC) */
+    .smart-pass-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .pass-card {
+      background: var(--card-dark);
+      border: 1px solid var(--border-dark);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+    .pass-card:hover {
+      border-color: var(--primary-light);
+      background: var(--card-dark-sub);
+    }
+    .pass-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+    }
+    .pass-icon.door { background: rgba(59, 130, 246, 0.15); color: #60a5fa; }
+    .pass-icon.nfc { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+    .pass-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    .pass-desc {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* Wallet / Sunlight Token Balance */
+    .wallet-card {
+      background: linear-gradient(135deg, #1e1b4b, #0f172a);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      border-radius: var(--radius-lg);
+      padding: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: var(--shadow-card);
+    }
+    .wallet-info h4 {
+      font-size: 0.8rem;
+      color: #c4b5fd;
+      font-weight: 500;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .wallet-amount {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: #fff;
+      font-family: 'Outfit', sans-serif;
+    }
+    .wallet-amount span {
+      font-size: 0.9rem;
+      color: #fde047;
+      font-weight: 700;
+      margin-left: 4px;
+    }
+    .btn-wallet-action {
+      background: rgba(245, 158, 11, 0.2);
+      border: 1px solid #f59e0b;
+      color: #fef08a;
+      font-size: 0.82rem;
+      font-weight: 700;
+      padding: 8px 14px;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-wallet-action:hover {
+      background: #f59e0b;
+      color: #000;
+    }
+
+    /* Section Cards */
+    .section-card {
+      background: var(--card-dark);
+      border: 1px solid var(--border-dark);
+      border-radius: var(--radius-lg);
+      padding: 18px;
+    }
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    .section-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-link {
+      font-size: 0.8rem;
+      color: var(--primary-light);
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    /* Task List (단지 내 일거리) */
+    .task-item {
+      background: var(--card-dark-sub);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      margin-bottom: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .task-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    .task-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #fff;
+    }
+    .task-reward {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #fbbf24;
+      background: rgba(245, 158, 11, 0.15);
+      padding: 3px 8px;
+      border-radius: var(--radius-full);
+      white-space: nowrap;
+    }
+    .task-desc {
+      font-size: 0.8rem;
+      color: var(--text-sub);
+      line-height: 1.4;
+    }
+    .task-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+    .btn-task-apply {
+      background: var(--primary);
+      border: none;
+      color: #fff;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+    }
+    .btn-task-apply:hover {
+      background: var(--primary-dark);
+    }
+
+    /* Shared Facility (세탁실 & 공구) */
+    .facility-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+    .facility-box {
+      background: var(--card-dark-sub);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      border: 1px solid var(--border-dark);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .facility-name {
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+    }
+    .facility-badge {
+      font-size: 0.7rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .badge-avail { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+    .badge-busy { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+    .btn-reserve {
+      margin-top: 4px;
+      width: 100%;
+      background: transparent;
+      border: 1px solid var(--primary-light);
+      color: var(--primary-light);
+      font-size: 0.75rem;
+      padding: 5px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .btn-reserve:hover {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    /* Welfare Mall Item */
+    .mall-scroll {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      scrollbar-width: none;
+    }
+    .mall-scroll::-webkit-scrollbar { display: none; }
+    .mall-card {
+      min-width: 130px;
+      background: var(--card-dark-sub);
+      border-radius: var(--radius-md);
+      padding: 10px;
+      border: 1px solid var(--border-dark);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .mall-img {
+      width: 100%;
+      height: 75px;
+      background: #1e293b;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+    }
+    .mall-name {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .mall-price {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #fbbf24;
+    }
+    .btn-mall-buy {
+      background: rgba(245, 158, 11, 0.2);
+      border: 1px solid #f59e0b;
+      color: #fef08a;
+      font-size: 0.75rem;
+      padding: 4px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    /* Resident Vote Section */
+    .vote-box {
+      background: var(--card-dark-sub);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      border: 1px solid var(--border-dark);
+    }
+    .vote-question {
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+    .vote-bar-wrapper {
+      margin: 10px 0;
+    }
+    .vote-bar-bg {
+      width: 100%;
+      height: 10px;
+      background: #334155;
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      display: flex;
+    }
+    .vote-bar-yes {
+      height: 100%;
+      background: var(--primary);
+      width: 78%;
+      transition: width 0.5s ease;
+    }
+    .vote-bar-no {
+      height: 100%;
+      background: #ef4444;
+      width: 22%;
+      transition: width 0.5s ease;
+    }
+    .vote-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .btn-vote {
+      flex: 1;
+      padding: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      border: 1px solid var(--border-dark);
+      background: #1e293b;
+      color: #fff;
+    }
+    .btn-vote.yes:hover { background: var(--primary); }
+    .btn-vote.no:hover { background: #ef4444; }
+
+    /* SOS & Complaint Row */
+    .sos-complaint-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .sos-card {
+      background: linear-gradient(135deg, #450a0a, #1f2937);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      text-align: center;
+    }
+    .sos-icon {
+      font-size: 1.8rem;
+      animation: shakeIcon 2.5s infinite;
+    }
+    @keyframes shakeIcon {
+      0%, 100% { transform: rotate(0); }
+      10%, 30% { transform: rotate(-8deg); }
+      20%, 40% { transform: rotate(8deg); }
+      50% { transform: rotate(0); }
+    }
+    .sos-text {
+      font-size: 0.9rem;
+      font-weight: 800;
+      color: #fca5a5;
+    }
+    .complaint-card {
+      background: var(--card-dark);
+      border: 1px solid var(--border-dark);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      text-align: center;
+    }
+    .complaint-icon { font-size: 1.8rem; color: #60a5fa; }
+    .complaint-text { font-size: 0.9rem; font-weight: 700; color: #fff; }
+
+    /* Bottom Navigation Bar */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      max-width: 480px;
+      background: rgba(9, 14, 26, 0.95);
+      backdrop-filter: blur(20px);
+      border-top: 1px solid var(--border-dark);
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0;
+      z-index: 100;
+    }
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.72rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    .nav-item.active {
+      color: var(--primary-light);
+    }
+    .nav-item-icon {
+      font-size: 1.3rem;
+    }
+
+    /* Modal Styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+      padding: 20px;
+    }
+    .modal-card {
+      width: 100%;
+      max-width: 400px;
+      background: var(--card-dark);
+      border: 1px solid var(--border-dark);
+      border-radius: var(--radius-lg);
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      box-shadow: var(--shadow-card);
+      animation: modalPop 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes modalPop {
+      0% { transform: scale(0.92); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    .btn-close-modal {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.3rem;
+      cursor: pointer;
+    }
+
+    /* Toast Notification */
+    .toast-box {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-100px);
+      background: #0f766e;
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: var(--radius-full);
+      font-size: 0.9rem;
+      font-weight: 700;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+      z-index: 300;
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .toast-box.show {
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- PWA Main Viewport -->
+  <div class="app-viewport">
+    
+    <!-- Top Navigation Bar -->
+    <header class="top-nav">
+      <div class="brand">
+        <div class="brand-logo">ON</div>
+        <div>
+          <span class="brand-title">우리단지 ON</span>
+          <span class="brand-sub">행복주택 & 임대 커뮤니티</span>
+        </div>
+      </div>
+      
+      <!-- Mode Switcher -->
+      <div class="mode-switch-group">
+        <button class="mode-btn active" id="btnModeSmart" onclick="switchAppMode('smart')">스마트</button>
+        <button class="mode-btn" id="btnModeSenior" onclick="switchAppMode('senior')">👵 쉬운모드</button>
+        <button class="mode-btn" id="btnModeAdmin" onclick="switchAppMode('admin')">🏢 관리자</button>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="content-area">
+
+      <!-- 1. 고독사 예방 Life-Signal 안심 카드 -->
+      <section class="life-signal-card" id="sectionLifeSignal">
+        <div class="life-signal-header">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span class="pulse-dot"></span>
+            <strong style="font-size:0.95rem; color:#fff;">안심 Life-Signal</strong>
+          </div>
+          <span class="signal-status-badge">
+            ✓ 24시간 정상 활동
+          </span>
+        </div>
+        <p style="font-size:0.8rem; color:#94a3b8; margin-bottom:14px; line-height:1.4;">
+          마지막 활동 기록: <strong>오늘 14:20 (101동 현관 태그)</strong><br>
+          매일 안부 버튼을 누르면 <strong>햇살 크레딧 50P</strong>가 적립됩니다.
+        </p>
+        <button class="senior-checkin-btn" onclick="triggerCheckIn()">
+          ☀️ 오늘도 건강해요! (안부 체크인)
+        </button>
+      </section>
+
+      <!-- 2. 단지 스마트 패스 (공동현관문 & 피처폰 NFC) -->
+      <section>
+        <div class="smart-pass-grid">
+          <div class="pass-card" onclick="openDoorPass()">
+            <div class="pass-icon door">🚪</div>
+            <div>
+              <div class="pass-title">공동현관 문열림</div>
+              <div class="pass-desc">스마트 원터치 자동 개방</div>
+            </div>
+          </div>
+          <div class="pass-card" onclick="simulateNFCTag()">
+            <div class="pass-icon nfc">📶</div>
+            <div>
+              <div class="pass-title">NFC 카드 태그</div>
+              <div class="pass-desc">피처폰/스티커 시뮬레이터</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. 노동화폐(햇살 크레딧) 지갑 -->
+      <section class="wallet-card">
+        <div class="wallet-info">
+          <h4>☀️ 나의 햇살 크레딧 (노동화폐)</h4>
+          <div class="wallet-amount" id="walletBalance">14,250 <span>P</span></div>
+        </div>
+        <button class="btn-wallet-action" onclick="openWalletModal()">내 지갑 / 바코드</button>
+      </section>
+
+      <!-- 4. 단지 내 일거리 (Task Workspace - 수급자 소득보전형) -->
+      <section class="section-card">
+        <div class="section-header">
+          <div class="section-title">
+            <span>🛠️</span>
+            <span>오늘의 단지 일거리</span>
+          </div>
+          <span class="section-link" onclick="showToast('전체 8개의 일거리가 있습니다.')">더보기</span>
+        </div>
+        
+        <div class="task-item">
+          <div class="task-top">
+            <div class="task-title">102동 재활용 분리수거장 1시간 정돈</div>
+            <div class="task-reward">+2,500 P</div>
+          </div>
+          <div class="task-desc">오후 4시~5시 분리수거함 정리 및 주변 청소 (사진 인증 필요)</div>
+          <div class="task-meta">
+            <span>모집: 1/2명 • 관리사무소</span>
+            <button class="btn-task-apply" onclick="applyTask('102동 재활용 분리수거장 정돈', 2500)">신청하기</button>
+          </div>
+        </div>
+
+        <div class="task-item">
+          <div class="task-top">
+            <div class="task-title">304호 독거 어르신 주간 안부 방문 & 말벗</div>
+            <div class="task-reward">+3,000 P</div>
+          </div>
+          <div class="task-desc">어르신 안부 확인 및 도시락 전달 (30분 소요)</div>
+          <div class="task-meta">
+            <span>모집: 0/1명 • 행복복지관</span>
+            <button class="btn-task-apply" onclick="applyTask('304호 어르신 안부 방문', 3000)">신청하기</button>
+          </div>
+        </div>
+
+        <div class="task-item senior-hide">
+          <div class="task-top">
+            <div class="task-title">단지 내 작은도서관 도서 정리 & 환기</div>
+            <div class="task-reward">+1,800 P</div>
+          </div>
+          <div class="task-desc">반납 도서 제자리 꽂기 및 책상 소독</div>
+          <div class="task-meta">
+            <span>모집: 1/1명 (마감임박)</span>
+            <button class="btn-task-apply" onclick="applyTask('작은도서관 도서 정리', 1800)">신청하기</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. 공유 인프라 예약 (세탁실 & 공구 대여) -->
+      <section class="section-card">
+        <div class="section-header">
+          <div class="section-title">
+            <span>🧺</span>
+            <span>공유 시설 & 장비 쉐어링</span>
+          </div>
+          <span style="font-size:0.75rem; color:#94a3b8;">지하 1층 공용공간</span>
+        </div>
+
+        <div class="facility-grid">
+          <div class="facility-box">
+            <div class="facility-name">
+              <span>대형세탁기 1호</span>
+              <span class="facility-badge badge-avail">사용가능</span>
+            </div>
+            <div style="font-size:0.75rem; color:#94a3b8;">이용료: 800P</div>
+            <button class="btn-reserve" onclick="reserveFacility('대형세탁기 1호', 800)">예약/작동</button>
+          </div>
+
+          <div class="facility-box">
+            <div class="facility-name">
+              <span>의류건조기 2호</span>
+              <span class="facility-badge badge-busy">14분 남음</span>
+            </div>
+            <div style="font-size:0.75rem; color:#94a3b8;">이용료: 800P</div>
+            <button class="btn-reserve" onclick="showToast('현재 작동 중입니다. 14분 후 예약 가능')">대기알림</button>
+          </div>
+
+          <div class="facility-box">
+            <div class="facility-name">
+              <span>전동드릴 세트</span>
+              <span class="facility-badge badge-avail">스마트락</span>
+            </div>
+            <div style="font-size:0.75rem; color:#94a3b8;">무료 대여 (4시간)</div>
+            <button class="btn-reserve" onclick="unlockTool('전동드릴 세트')">보관함 열기</button>
+          </div>
+
+          <div class="facility-box">
+            <div class="facility-name">
+              <span>접이식 사다리</span>
+              <span class="facility-badge badge-avail">스마트락</span>
+            </div>
+            <div style="font-size:0.75rem; color:#94a3b8;">무료 대여 (4시간)</div>
+            <button class="btn-reserve" onclick="unlockTool('접이식 사다리')">보관함 열기</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. 온라인 복지몰 & 로컬 상가 (햇살 크레딧 구매) -->
+      <section class="section-card">
+        <div class="section-header">
+          <div class="section-title">
+            <span>🛒</span>
+            <span>단지 복지몰 (노동화폐 결제)</span>
+          </div>
+          <span class="section-link" onclick="showToast('단지 상가 5곳과 연계되어 있습니다.')">상가목록</span>
+        </div>
+
+        <div class="mall-scroll">
+          <div class="mall-card">
+            <div class="mall-img">🍜</div>
+            <div class="mall-name">신라면 (5개입)</div>
+            <div class="mall-price">2,000 P</div>
+            <button class="btn-mall-buy" onclick="buyMallItem('신라면 (5개입)', 2000)">크레딧 구매</button>
+          </div>
+
+          <div class="mall-card">
+            <div class="mall-img">🍚</div>
+            <div class="mall-name">철원오대쌀 (4kg)</div>
+            <div class="mall-price">6,500 P</div>
+            <button class="btn-mall-buy" onclick="buyMallItem('철원오대쌀 4kg', 6500)">크레딧 구매</button>
+          </div>
+
+          <div class="mall-card">
+            <div class="mall-img">🧼</div>
+            <div class="mall-name">친환경 주방세제</div>
+            <div class="mall-price">1,200 P</div>
+            <button class="btn-mall-buy" onclick="buyMallItem('친환경 주방세제', 1200)">크레딧 구매</button>
+          </div>
+
+          <div class="mall-card">
+            <div class="mall-img">🍱</div>
+            <div class="mall-name">단지상가 반찬 5천원권</div>
+            <div class="mall-price">3,500 P</div>
+            <button class="btn-mall-buy" onclick="buyMallItem('단지상가 반찬 쿠폰', 3500)">크레딧 구매</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 7. 주민 자치 전자 투표 (Resident Voting) -->
+      <section class="section-card">
+        <div class="section-header">
+          <div class="section-title">
+            <span>🗳️</span>
+            <span>주민 자치 투표</span>
+          </div>
+          <span style="font-size:0.75rem; color:#10b981; font-weight:700;">D-3 진행중</span>
+        </div>
+
+        <div class="vote-box">
+          <div class="vote-question">[안건] 단지 중앙 화단에 그늘막 벤치 추가 설치의 건</div>
+          <div style="font-size:0.75rem; color:#94a3b8;">참여 주민: 142세대 투표 완료</div>
+          <div class="vote-bar-wrapper">
+            <div class="vote-bar-bg">
+              <div class="vote-bar-yes" id="voteYesBar" style="width: 82%;"></div>
+              <div class="vote-bar-no" id="voteNoBar" style="width: 18%;"></div>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-size:0.75rem; margin-top:4px;">
+              <span style="color:#2dd4bf; font-weight:700;">찬성 82%</span>
+              <span style="color:#f87171; font-weight:700;">반대 18%</span>
+            </div>
+          </div>
+          <div class="vote-actions">
+            <button class="btn-vote yes" onclick="castVote('찬성')">👍 찬성</button>
+            <button class="btn-vote no" onclick="castVote('반대')">👎 반대</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 8. 긴급 SOS & 스마트 민원 -->
+      <section class="sos-complaint-row">
+        <div class="sos-card" onclick="triggerSOS()">
+          <div class="sos-icon">🚨</div>
+          <div class="sos-text">긴급 SOS 비상벨</div>
+          <span style="font-size:0.7rem; color:#fca5a5;">119 / 관리실 즉시 호출</span>
+        </div>
+
+        <div class="complaint-card" onclick="openComplaintModal()">
+          <div class="complaint-icon">📝</div>
+          <div class="complaint-text">스마트 민원 신고</div>
+          <span style="font-size:0.7rem; color:#94a3b8;">시설 파손 / 소음 접수</span>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Bottom Navigation Bar -->
+    <nav class="bottom-nav">
+      <button class="nav-item active" onclick="switchNav(this, 'home')">
+        <span class="nav-item-icon">🏠</span>
+        <span>홈</span>
+      </button>
+      <button class="nav-item" onclick="switchNav(this, 'tasks')">
+        <span class="nav-item-icon">🛠️</span>
+        <span>일거리</span>
+      </button>
+      <button class="nav-item" onclick="switchNav(this, 'facility')">
+        <span class="nav-item-icon">🧺</span>
+        <span>공유시설</span>
+      </button>
+      <button class="nav-item" onclick="switchNav(this, 'mall')">
+        <span class="nav-item-icon">🛒</span>
+        <span>복지몰</span>
+      </button>
+      <button class="nav-item" onclick="switchNav(this, 'sos')">
+        <span class="nav-item-icon">🚨</span>
+        <span>SOS/민원</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- Desktop Explanation Side Card -->
+  <aside class="desktop-sidebar-info">
+    <div class="desktop-info-card">
+      <h3>🏛️ LCM - 우리단지 ON</h3>
+      <p>
+        <strong>임대아파트 & 영구임대·행복주택</strong> 입주민을 위한 혁신적인 All-in-One PWA 커뮤니티 플랫폼입니다.
+      </p>
+      <ul style="font-size:0.85rem; color:#cbd5e1; line-height:1.8; padding-left:18px;">
+        <li><strong>고독사 예방:</strong> 24시간 Life-Signal 안심 레이더</li>
+        <li><strong>수급권 보호:</strong> 단지 내 비현금 노동화폐(햇살 크레딧)</li>
+        <li><strong>디지털 소외 극복:</strong> 피처폰 NFC 태그 & 큰글씨 쉬운 모드</li>
+        <li><strong>공간 협소 해결:</strong> 공용 세탁실/공구함 스마트 쉐어링</li>
+        <li><strong>자치 거버넌스:</strong> 입주민 모바일 전자 투표</li>
+      </ul>
+    </div>
+
+    <div class="desktop-info-card">
+      <h3>💡 상단 모드 전환 안내</h3>
+      <p>
+        화면 상단에서 <strong>[스마트]</strong>, <strong>[👵 쉬운모드]</strong>, <strong>[🏢 관리자]</strong> 모드를 전환하여 세대별/관리자별 맞춤 UI를 실시간으로 테스트해 보세요!
+      </p>
+    </div>
+  </aside>
+
+  <!-- Modal: Wallet & Barcode -->
+  <div class="modal-overlay" id="walletModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">☀️ 햇살 크레딧 지갑</h3>
+        <button class="btn-close-modal" onclick="closeModal('walletModal')">✕</button>
+      </div>
+      <div style="text-align:center; padding:10px 0;">
+        <div style="font-size:0.85rem; color:#94a3b8;">단지 상가 및 복지몰 결제 바코드</div>
+        <div style="background:#fff; padding:14px; border-radius:10px; margin:14px auto; display:inline-block;">
+          <svg width="220" height="65" viewBox="0 0 220 65" style="display:block;">
+            <rect width="4" height="50" x="10" fill="#000"/>
+            <rect width="2" height="50" x="18" fill="#000"/>
+            <rect width="6" height="50" x="24" fill="#000"/>
+            <rect width="2" height="50" x="34" fill="#000"/>
+            <rect width="4" height="50" x="40" fill="#000"/>
+            <rect width="8" height="50" x="48" fill="#000"/>
+            <rect width="2" height="50" x="60" fill="#000"/>
+            <rect width="4" height="50" x="66" fill="#000"/>
+            <rect width="6" height="50" x="74" fill="#000"/>
+            <rect width="2" height="50" x="84" fill="#000"/>
+            <rect width="4" height="50" x="90" fill="#000"/>
+            <rect width="2" height="50" x="98" fill="#000"/>
+            <rect width="8" height="50" x="104" fill="#000"/>
+            <rect width="4" height="50" x="116" fill="#000"/>
+            <rect width="2" height="50" x="124" fill="#000"/>
+            <rect width="6" height="50" x="130" fill="#000"/>
+            <rect width="4" height="50" x="140" fill="#000"/>
+            <rect width="8" height="50" x="148" fill="#000"/>
+            <rect width="2" height="50" x="160" fill="#000"/>
+            <rect width="4" height="50" x="166" fill="#000"/>
+            <rect width="6" height="50" x="174" fill="#000"/>
+            <rect width="4" height="50" x="184" fill="#000"/>
+            <rect width="8" height="50" x="192" fill="#000"/>
+            <rect width="4" height="50" x="204" fill="#000"/>
+            <text x="110" y="62" font-size="10" text-anchor="middle" fill="#000" font-family="monospace">8809-1048-7721-09</text>
+          </svg>
+        </div>
+        <div style="font-size:1.4rem; font-weight:800; color:#fbbf24;" id="modalWalletBalance">14,250 P</div>
+      </div>
+      <button class="btn-action senior-checkin-btn" onclick="closeModal('walletModal')">확인</button>
+    </div>
+  </div>
+
+  <!-- Modal: Complaint (민원 접수) -->
+  <div class="modal-overlay" id="complaintModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">📝 스마트 민원 접수</h3>
+        <button class="btn-close-modal" onclick="closeModal('complaintModal')">✕</button>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:12px;">
+        <div>
+          <label style="font-size:0.8rem; color:#94a3b8; display:block; margin-bottom:4px;">민원 유형</label>
+          <select id="complaintType" style="width:100%; padding:10px; border-radius:8px; background:#1e293b; color:#fff; border:1px solid #334155;">
+            <option>시설 파손 (조명, 승강기, 도어락 등)</option>
+            <option>층간 소음 및 환경 정비</option>
+            <option>독거 이웃 안부 확인 요청</option>
+            <option>기타 건의 사항</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:0.8rem; color:#94a3b8; display:block; margin-bottom:4px;">내용</label>
+          <textarea id="complaintText" placeholder="상세 내용을 적어주세요. (예: 101동 2층 복도 전등 깜빡임)" style="width:100%; height:80px; padding:10px; border-radius:8px; background:#1e293b; color:#fff; border:1px solid #334155; resize:none;"></textarea>
+        </div>
+        <button class="senior-checkin-btn" onclick="submitComplaint()">민원 접수하기</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Box -->
+  <div class="toast-box" id="toastBox">
+    <span id="toastIcon">✨</span>
+    <span id="toastMsg">알림 메시지</span>
+  </div>
+
+  <script>
+    // State
+    let userBalance = 14250;
+    let isSeniorMode = false;
+    let lastCheckinTime = new Date();
+
+    // Register Service Worker for PWA
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(err => {
+          console.log('SW registration failed:', err);
+        });
+      });
+    }
+
+    // Mode Switcher Logic
+    function switchAppMode(mode) {
+      document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+      
+      if (mode === 'senior') {
+        document.getElementById('btnModeSenior').classList.add('active');
+        document.body.classList.add('senior-mode');
+        isSeniorMode = true;
+        showToast('👵 어르신 큰글씨 간편 모드로 전환되었습니다.');
+      } else if (mode === 'admin') {
+        document.getElementById('btnModeAdmin').classList.add('active');
+        document.body.classList.remove('senior-mode');
+        isSeniorMode = false;
+        showToast('🏢 [관리자 레이더] 단지 내 독거 42세대 활동 정상 감지 중');
+      } else {
+        document.getElementById('btnModeSmart').classList.add('active');
+        document.body.classList.remove('senior-mode');
+        isSeniorMode = false;
+        showToast('🌟 청년/일반 스마트 커뮤니티 모드로 전환되었습니다.');
+      }
+    }
+
+    // Check-in (고독사 안심 라이프 시그널)
+    function triggerCheckIn() {
+      userBalance += 50;
+      updateBalance();
+      showToast('☀️ 안부 체크인 완료! 50P가 적립되었습니다.');
+    }
+
+    // Smart Door Pass
+    function openDoorPass() {
+      showToast('🚪 [101동 공동현관] 문이 열렸습니다. (안전 출입)');
+    }
+
+    // Simulate NFC Tag (피처폰/물리 NFC 카드)
+    function simulateNFCTag() {
+      userBalance += 50;
+      updateBalance();
+      showToast('📶 [NFC 태깅] 101동 출입구 태깅 완료! (+50P 적립 & 활동 갱신)');
+    }
+
+    // Apply Task
+    function applyTask(taskName, reward) {
+      if (confirm(`'${taskName}' 업무를 신청하시겠습니까?\n완료 후 사진 인증 시 ${reward.toLocaleString()}P가 지급됩니다.`)) {
+        userBalance += reward;
+        updateBalance();
+        showToast(`✅ '${taskName}' 신청 & 승인 완료! (+${reward.toLocaleString()}P 적립)`);
+      }
+    }
+
+    // Reserve Facility
+    function reserveFacility(name, fee) {
+      if (userBalance < fee) {
+        alert('햇살 크레딧 잔액이 부족합니다.');
+        return;
+      }
+      userBalance -= fee;
+      updateBalance();
+      showToast(`🧺 ${name} 예약 완료! (${fee}P 차감) 40분 타이머 시작`);
+    }
+
+    // Unlock Tool
+    function unlockTool(name) {
+      showToast(`🔐 [스마트 공구함] ${name} 보관함 번호: #4208 (잠금 해제됨)`);
+    }
+
+    // Buy Welfare Mall Item
+    function buyMallItem(name, price) {
+      if (userBalance < price) {
+        alert('햇살 크레딧 잔액이 부족합니다.');
+        return;
+      }
+      userBalance -= price;
+      updateBalance();
+      showToast(`🎉 '${name}' 구매 완료! (${price.toLocaleString()}P 사용 - 바코드 발급)`);
+    }
+
+    // Cast Vote
+    function castVote(choice) {
+      showToast(`🗳️ 안건에 [${choice}] 투표를 완료하셨습니다.`);
+      if (choice === '찬성') {
+        document.getElementById('voteYesBar').style.width = '84%';
+        document.getElementById('voteNoBar').style.width = '16%';
+      }
+    }
+
+    // SOS Emergency
+    function triggerSOS() {
+      if (confirm('🚨 [긴급 SOS] 119 및 단지 관리사무소에 비상 호출을 전송하시겠습니까?')) {
+        showToast('🚨 [비상 호출 완료] 관리실 및 당직실에 현 위치가 전송되었습니다.');
+      }
+    }
+
+    // Modals
+    function openWalletModal() {
+      document.getElementById('modalWalletBalance').innerText = userBalance.toLocaleString() + ' P';
+      document.getElementById('walletModal').style.display = 'flex';
+    }
+    function openComplaintModal() {
+      document.getElementById('complaintModal').style.display = 'flex';
+    }
+    function closeModal(id) {
+      document.getElementById(id).style.display = 'none';
+    }
+
+    function submitComplaint() {
+      const type = document.getElementById('complaintType').value;
+      closeModal('complaintModal');
+      showToast(`📝 [민원 접수 완료] '${type}' 처리가 관리실에 등록되었습니다.`);
+    }
+
+    // Balance updater
+    function updateBalance() {
+      document.getElementById('walletBalance').innerHTML = `${userBalance.toLocaleString()} <span>P</span>`;
+    }
+
+    // Navigation Tab Switcher
+    function switchNav(btn, tab) {
+      document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+      btn.classList.add('active');
+      showToast(`📂 [${btn.innerText.trim()}] 탭으로 이동했습니다.`);
+    }
+
+    // Toast Utility
+    let toastTimer;
+    function showToast(msg) {
+      const box = document.getElementById('toastBox');
+      const text = document.getElementById('toastMsg');
+      text.innerText = msg;
+      box.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        box.classList.remove('show');
+      }, 3000);
+    }
+  </script>
+</body>
+</html>
