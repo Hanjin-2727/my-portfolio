@@ -371,6 +371,90 @@
       border-color: #818cf8;
     }
 
+    
+    /* Explicit Distinguishable Styling for Placeholders and Sample Examples (Gray vs White) */
+    ::placeholder {
+      color: #64748b !important;
+      font-style: italic !important;
+      opacity: 0.9 !important;
+    }
+    ::-webkit-input-placeholder {
+      color: #64748b !important;
+      font-style: italic !important;
+      opacity: 0.9 !important;
+    }
+    ::-moz-placeholder {
+      color: #64748b !important;
+      font-style: italic !important;
+      opacity: 0.9 !important;
+    }
+    :-ms-input-placeholder {
+      color: #64748b !important;
+      font-style: italic !important;
+      opacity: 0.9 !important;
+    }
+
+    /* Actual User Input Color: Crisp Bright White */
+    input[type="text"], input[type="number"], input[type="email"], input[type="date"], select, textarea {
+      color: #ffffff !important;
+      font-weight: 500;
+    }
+
+    /* Sample Hint / Example Captions in Clear Slate Gray */
+    .sample-hint, .example-text, .hint-text {
+      color: #64748b !important;
+      font-size: 0.76rem;
+      font-style: normal;
+    }
+
+    /* Pagination Buttons */
+    .page-btn {
+      padding: 7px 13px;
+      background: rgba(30, 41, 59, 0.9);
+      color: #cbd5e1;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+    .page-btn:hover:not(:disabled) {
+      background: rgba(99, 102, 241, 0.35);
+      color: #ffffff;
+      border-color: #818cf8;
+      transform: translateY(-1px);
+    }
+    .page-btn.active {
+      background: #6366f1;
+      color: #ffffff;
+      font-weight: 700;
+      border-color: #a5b4fc;
+      box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+    }
+    .page-btn:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    /* Scenario Quick Buttons */
+    .btn-scenario {
+      background: rgba(30, 41, 59, 0.8);
+      border: 1px solid rgba(99, 102, 241, 0.4);
+      color: #c7d2fe;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .btn-scenario:hover {
+      background: rgba(99, 102, 241, 0.3);
+      color: #ffffff;
+      border-color: #818cf8;
+    }
+
     /* Selected Category Chips */
     .cat-chip {
       background-color: rgba(59, 130, 246, 0.2);
@@ -1204,6 +1288,7 @@
                     ⏱️ 총 과업 기간: <span id="contractDurationDays" style="color: #ffffff;">31일간 (약 4주)</span>
                   </div>
                 </div>
+                <span class="sample-hint" style="color: #64748b; font-size: 0.74rem; margin-top: 6px; display: block;">(예시: 1개월 30~31일 표준 과업 기간 산정)</span>
               </div>
 
               <!-- 2-1. 총 산정 투입시간 -->
@@ -1213,7 +1298,7 @@
                   <input type="number" id="contractHours" value="40" min="1" step="1" oninput="calcContractMetrics()" style="flex:1;">
                   <span style="color:#94a3b8; font-weight:600; white-space:nowrap;">시간</span>
                 </div>
-                <span style="font-size: 0.74rem; color: #64748b; margin-top: 4px; display: block;">(예: 주 10시간 × 4주 과업)</span>
+                <span class="sample-hint" style="color: #64748b; font-size: 0.74rem; margin-top: 4px; display: block;">(예시: 주 10시간 × 4주 과업)</span>
               </div>
 
               <!-- 2-2. 시간당 자문 단가 -->
@@ -1223,19 +1308,19 @@
                   <input type="number" id="contractRate" value="150000" min="10000" step="10000" oninput="calcContractMetrics()" style="flex:1;">
                   <span style="color:#94a3b8; font-weight:600; white-space:nowrap;">원/시간</span>
                 </div>
-                <span style="font-size: 0.74rem; color: #64748b; margin-top: 4px; display: block;">(시니어 어드바이저 표준 단가)</span>
+                <span class="sample-hint" style="color: #64748b; font-size: 0.74rem; margin-top: 4px; display: block;">(예시: 시니어 전문가 표준 단가)</span>
               </div>
 
               <!-- 3. 정기 산출물 제출 주기 (일단위, 주단위, 격주단위, 월단위) -->
               <div>
                 <label for="regularDeliverableFreq" style="font-size: 0.85rem;">3. 정기 산출물 제출 주기<span class="req">*</span></label>
-                <select id="regularDeliverableFreq" onchange="calcContractMetrics()" style="width: 100%; padding: 10px 12px; background: var(--input-bg); border: 1px solid var(--input-border); border-radius: 6px; color: var(--text-main); font-weight: 500;">
+                <select id="regularDeliverableFreq" onchange="calcContractMetrics()" style="width: 100%; padding: 10px 12px; background: var(--input-bg); border: 1px solid var(--input-border); border-radius: 6px; color: #ffffff; font-weight: 500;">
                   <option value="일단위">일단위 (Daily - 일일 업무 로그 & 진행 점검)</option>
                   <option value="주단위" selected>주단위 (Weekly - 주간 진척 보고서 & 정기 회의) [기본]</option>
                   <option value="격주단위">격주단위 (Bi-weekly - 2주 단위 중간 산출물 보고)</option>
                   <option value="월단위">월단위 (Monthly - 월간 마일스톤 종합 보고)</option>
                 </select>
-                <span style="font-size: 0.74rem; color: #34d399; margin-top: 4px; display: block;">✓ 시스템 내 파일 전달 및 회의 자동 기록</span>
+                <span class="sample-hint" style="color: #64748b; font-size: 0.74rem; margin-top: 4px; display: block;">(예시: 주간 보고서 제출 및 화상 회의 진행)</span>
               </div>
 
               <!-- 4. 최종 산출물 분량 (보고서 형식 및 총 페이지 수) -->
@@ -1245,7 +1330,7 @@
                   <input type="number" id="reportPages" value="30" min="5" step="1" oninput="calcContractMetrics()" style="flex:1;">
                   <span style="color:#94a3b8; font-weight:600; white-space:nowrap;">페이지 이상</span>
                 </div>
-                <span style="font-size: 0.74rem; color: #64748b; margin-top: 4px; display: block;">(수치화된 정량 검수 기준 - PDF 보고서)</span>
+                <span class="sample-hint" style="color: #64748b; font-size: 0.74rem; margin-top: 4px; display: block;">(예시: 최종 보고서 30페이지 이상 PDF)</span>
               </div>
             </div>
 
@@ -1332,8 +1417,8 @@
               표준계약서 외에 당사자 간 1:1로 별도 협의된 <strong>개별 특수 요구사항(지식재산권 완전 귀속, 추가 무상 A/S 자문 횟수, 성과 보너스 등)</strong>을 입력하세요. <strong>AI 법률 어드바이저</strong>가 검토하여 법적 효력을 갖춘 특수조항으로 정제합니다.
             </p>
 
-            <textarea id="specialTermsInput" rows="3" placeholder="예: 자문 결과물에 포함된 아키텍처 다이어그램 및 소스코드의 지식재산권은 고객사에 완전 귀속하며, 자문 종료 후 3개월간 2회에 한해 추가 무상 서면 A/S 자문을 제공한다..." style="width:100%; padding:12px; background-color:var(--input-bg); border:1px solid var(--input-border); border-radius:8px; color:var(--text-main); font-family:inherit; font-size:0.9rem;">1. 자문 결과물에 포함된 아키텍처 다이어그램 및 소스코드의 지식재산권은 고객사에 완전 귀속된다.
-2. 자문 완료 후 3개월 이내 발생한 과업 범위 내 기술 문의에 대하여 2회에 한해 추가 무상 서면 A/S 자문을 이행한다.</textarea>
+            <textarea id="specialTermsInput" rows="3" placeholder="[입력 예시 - 회색]&#10;1. 자문 결과물에 포함된 아키텍처 다이어그램 및 소스코드의 지식재산권은 고객사에 완전 귀속된다.&#10;2. 자문 완료 후 3개월 이내 발생한 과업 범위 내 기술 문의에 대하여 2회에 한해 추가 무상 서면 A/S 자문을 이행한다." style="width:100%; padding:12px; background-color:var(--input-bg); border:1px solid var(--input-border); border-radius:8px; color:#ffffff; font-family:inherit; font-size:0.9rem;"></textarea>
+            <span class="sample-hint" style="color: #64748b; font-size: 0.76rem; margin-top: 5px; display: block;">* 위 회색 안내문은 샘플 예시(Placeholder)입니다. 직접 입력하시면 선명한 흰색으로 표시됩니다.</span>
 
             <div style="display: flex; gap: 12px; margin-top: 14px; flex-wrap: wrap;">
               <button type="button" class="btn-action-call" style="background-color: #8b5cf6;" onclick="reviewSpecialTermsAI()">🤖 AI 법률 어드바이저 리뷰 & 특수조항 정제</button>
@@ -3923,7 +4008,7 @@
       if (countSpan) countSpan.innerText = '최대 3개까지 선택 가능 (' + selectedCategoryList.length + '/3)';
 
       if (selectedCategoryList.length === 0) {
-        container.innerHTML = '<span style="color: var(--text-muted); font-size: 0.85rem; display: flex; align-items: center;" id="emptyCatNotice">선택된 전문분야가 없습니다. 전문분야를 선택 후 "+ 분야 추가" 버튼을 눌러주세요 (최대 3개).</span>';
+        container.innerHTML = '<span style="color: #64748b; font-size: 0.85rem; font-style: italic; display: flex; align-items: center;" id="emptyCatNotice">선택된 전문분야가 없습니다. 전문분야를 선택 후 "+ 분야 추가" 버튼을 눌러주세요 (최대 3개).</span>';
         return;
       }
 
@@ -3969,7 +4054,7 @@
       if (countSpan) countSpan.innerText = '자신을 표현하는 대표 검색 키워드 (최대 5개) (' + selectedKeywordList.length + '/5)';
 
       if (selectedKeywordList.length === 0) {
-        container.innerHTML = '<span style="color: var(--text-muted); font-size: 0.85rem; display: flex; align-items: center;" id="emptyKwNotice">등록된 검색 키워드가 없습니다. 키워드 입력 후 "+ 키워드 추가" 버튼을 눌러주세요 (최대 5개).</span>';
+        container.innerHTML = '<span style="color: #64748b; font-size: 0.85rem; font-style: italic; display: flex; align-items: center;" id="emptyKwNotice">등록된 검색 키워드가 없습니다. 키워드 입력 후 "+ 키워드 추가" 버튼을 눌러주세요 (최대 5개).</span>';
         return;
       }
 
@@ -4090,19 +4175,33 @@
       var statusBadge = document.getElementById("uuidStatusBadge");
 
       if (!realName && !nickname && !email && !phone) {
-        if (rawDisplay) rawDisplay.innerText = "(실명 + 모바일번호 + 닉네임 + 이메일주소)";
-        if (uuidDisplay) uuidDisplay.innerText = "-";
-        if (shortIdDisplay) shortIdDisplay.innerText = "-";
+        if (rawDisplay) {
+          rawDisplay.innerText = "(예시: 홍길동#010-1234-5678#새벽공기#advisor@domain.com)";
+          rawDisplay.style.color = "#64748b";
+          rawDisplay.style.fontStyle = "italic";
+        }
+        if (uuidDisplay) {
+          uuidDisplay.innerText = "-";
+          uuidDisplay.style.color = "#64748b";
+        }
+        if (shortIdDisplay) {
+          shortIdDisplay.innerText = "-";
+          shortIdDisplay.style.color = "#64748b";
+        }
         if (statusBadge) {
           statusBadge.innerText = "정보 입력 대기 중";
-          statusBadge.style.background = "rgba(148, 163, 184, 0.2)";
-          statusBadge.style.color = "#94a3b8";
+          statusBadge.style.background = "rgba(148, 163, 184, 0.15)";
+          statusBadge.style.color = "#64748b";
         }
         return null;
       }
 
       var rawString = `${realName}#${phone}#${nickname}#${email}`;
-      if (rawDisplay) rawDisplay.innerText = rawString;
+      if (rawDisplay) {
+        rawDisplay.innerText = rawString;
+        rawDisplay.style.color = "#cbd5e1";
+        rawDisplay.style.fontStyle = "normal";
+      }
 
       var hashHex = await computeSHA256Hex(rawString);
 
@@ -4116,8 +4215,14 @@
       var uuid = `${part1}-${part2}-${part3}-${part4}-${part5}`;
       var shortId = "Adv-" + part1.substring(0, 4).toUpperCase();
 
-      if (uuidDisplay) uuidDisplay.innerText = uuid;
-      if (shortIdDisplay) shortIdDisplay.innerText = shortId;
+      if (uuidDisplay) {
+        uuidDisplay.innerText = uuid;
+        uuidDisplay.style.color = "#38bdf8";
+      }
+      if (shortIdDisplay) {
+        shortIdDisplay.innerText = shortId;
+        shortIdDisplay.style.color = "#34d399";
+      }
 
       if (statusBadge) {
         if (realName && nickname && email && phone) {
@@ -4506,7 +4611,7 @@
     function reviewSpecialTermsAI() {
       var input = document.getElementById("specialTermsInput").value.trim();
       if (!input) {
-        alert("합의된 별첨 특수계약 사항을 입력해 주세요.");
+        alert("합의된 별첨 특수계약 사항을 입력해 주세요 (입력 예시를 참고하여 직접 입력 가능합니다).");
         return;
       }
 
