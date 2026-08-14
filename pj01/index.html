@@ -3807,17 +3807,23 @@
     var selectedCategoryList = [];
     var selectedKeywordList = [];
 
-    // Tab Navigation Logic
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-        btn.classList.add('active');
-        var targetId = btn.getAttribute('data-tab');
-        var targetContent = document.getElementById(targetId);
-        if (targetContent) targetContent.classList.add('active');
-      });
-    });
+    // Global Tab Switching Function
+    function switchTab(tabId, btnElement) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      
+      if (btnElement) {
+        btnElement.classList.add('active');
+      } else {
+        var targetBtn = document.querySelector('.tab-btn[onclick*="' + tabId + '"]');
+        if (targetBtn) targetBtn.classList.add('active');
+      }
+      
+      var targetContent = document.getElementById(tabId);
+      if (targetContent) {
+        targetContent.classList.add('active');
+      }
+    }
 
     // 2. 전문분야 Category Selection
     function handleMainCategorySelect() {
@@ -4581,80 +4587,64 @@
       }, 600);
     }
 
-    // Communication Trigger (Tab 3 Switch)
+    // Communication Channel
     function startComm(name, type) {
-      document.getElementById("chatTargetName").innerText = name;
-      document.getElementById("callTargetName").innerText = name;
-      
-      var firstMsg = document.getElementById("firstMsgAdvisor");
-      if (firstMsg) {
-        firstMsg.innerHTML = "<strong>" + name + ":</strong> 안녕하세요! 문의해주신 도메인 아키텍처 및 기술 자문과 관련하여 어떤 부분 위주로 검토해 드릴까요?";
+      var callTarget = document.getElementById("callTargetName");
+      if (callTarget) callTarget.innerText = name + " (" + currentAdvisorProfile.shortId + ")";
+
+      var chatTarget = document.getElementById("chatTargetName");
+      if (chatTarget) chatTarget.innerText = name;
+
+      var firstMsg = document.getElementById("chatMessages");
+      if (firstMsg && firstMsg.firstElementChild) {
+        firstMsg.firstElementChild.innerHTML = "<strong>" + name + " (" + currentAdvisorProfile.shortId + "):</strong> 안녕하세요! 문의해주신 도메인 아키텍처 및 기술 자문과 관련하여 어떤 부분 위주로 검토해 드릴까요?";
       }
 
-      document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
-      document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
-
-      var commBtn = document.querySelector('.tab-btn[data-tab="tab-comm"]');
-      if (commBtn) commBtn.classList.add("active");
-      var commTab = document.getElementById("tab-comm");
-      if (commTab) commTab.classList.add("active");
-
+      switchTab('tab-comm');
       showToast("[" + name + "]님과의 커뮤니케이션 채널로 이동했습니다.");
     }
 
-    function sendChatMessage() {
+    function sendMsg() {
       var input = document.getElementById("chatInput");
       var text = input.value.trim();
       if (!text) return;
 
       var container = document.getElementById("chatMessages");
       var userMsg = document.createElement("div");
-      userMsg.className = "message msg-user";
+      userMsg.className = "chat-msg msg-sent";
       userMsg.innerHTML = "<strong>나 (발주처):</strong> " + text;
       container.appendChild(userMsg);
       input.value = "";
 
       var replyMsg = document.createElement("div");
-      replyMsg.className = "message msg-advisor";
-      replyMsg.innerHTML = "<strong>" + currentAdvisorProfile.nickname + " (" + currentAdvisorProfile.shortId + "):</strong> 검토 의뢰해주신 사항 확인했습니다. 시스템 상에 회의록 및 자료를 공유하며 진행하겠습니다.";
+      replyMsg.className = "chat-msg msg-received";
+      replyMsg.innerHTML = "<strong>" + currentAdvisorProfile.nickname + " (" + currentAdvisorProfile.shortId + "):</strong> 문의사항 확인했습니다. 시스템 상에 회의록 및 자료를 암호화 공유하며 진행하겠습니다.";
       setTimeout(() => {
         container.appendChild(replyMsg);
         container.scrollTop = container.scrollHeight;
-      }, 700);
+      }, 600);
     }
+    const sendChatMessage = sendMsg;
 
-    function startCall() {
-      var overlay = document.getElementById("videoOverlay");
-      overlay.style.display = "flex";
-      showToast("보안 화상 컨퍼런스 콜이 연결되었습니다 (주 1회 정기 회의 로그 자동 기록 중).");
+    function toggleBtn(btn, icon) {
+      if (btn.classList.contains("active")) {
+        btn.classList.remove("active");
+        btn.style.backgroundColor = "rgba(255, 255, 255, 0.1)";
+        showToast(icon + " 기능이 해제되었습니다.");
+      } else {
+        btn.classList.add("active");
+        btn.style.backgroundColor = "rgba(59, 130, 246, 0.6)";
+        showToast(icon + " 기능이 활성화되었습니다.");
+      }
     }
 
     function endCall() {
-      var overlay = document.getElementById("videoOverlay");
-      overlay.style.display = "none";
+      var status = document.getElementById("callStatusText");
+      if (status) {
+        status.innerText = "통화가 종료되었습니다 (시스템 회의록 자동 저장 완료).";
+        status.style.color = "#94a3b8";
+      }
       showToast("컨퍼런스 콜이 종료되었습니다 (시스템 회의록 자동 저장 완료).");
-    }
-
-    function toggleMic() {
-      var btn = document.getElementById("btnMic");
-      if (btn.innerText.includes("음소거")) {
-        btn.innerText = "🔇 마이크 켜기";
-        btn.style.background = "#ef4444";
-      } else {
-        btn.innerText = "🎤 음소거";
-        btn.style.background = "rgba(0,0,0,0.6)";
-      }
-    }
-
-    function toggleCam() {
-      var btn = document.getElementById("btnCam");
-      if (btn.innerText.includes("끄기")) {
-        btn.innerText = "📷 카메라 켜기";
-        btn.style.background = "#ef4444";
-      } else {
-        btn.innerText = "📹 비디오 끄기";
-        btn.style.background = "rgba(0,0,0,0.6)";
-      }
     }
 
     // Evaluation Star Rating
