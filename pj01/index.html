@@ -1135,7 +1135,7 @@
       </div>
     </section>
 
-    <!-- 5. 계약 및 분쟁조정 (어드바이저 표준계약서 & AI 분쟁조정) -->
+    <!-- 5. 계약 & AI분쟁조정 (어드바이저 표준 전자계약서) -->
     <section id="tab-contract" class="tab-content">
       <!-- 스마트 표준 전자계약서 작성 카드 -->
       <div class="card">
@@ -1176,17 +1176,39 @@
             </div>
           </div>
 
-          <!-- [2] 측정 가능한 자문 계약 조건 설정기 (투입시간, 단가, 주1회 회의, 보고서 페이지 수) -->
+          <!-- [2] 4대 정량적 계약 조건 설정기 (전체기간, 투입시간/단가, 정기산출물주기, 최종산출물분량) -->
           <div style="background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(59, 130, 246, 0.35); border-radius: 10px; padding: 18px 20px; margin-bottom: 22px;">
             <h5 style="color: #60a5fa; font-size: 0.95rem; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
-              <span>🔢 정량적 계약 조건 및 금액 산정 (숫자로 측정 가능한 기준 명시)</span>
-              <span style="font-size: 0.76rem; color: #94a3b8;">* 변경 시 표준계약서 조항과 에스크로 예치액이 실시간 자동 연동됩니다.</span>
+              <span>🔢 4대 정량적 계약 조건 및 금액 산정 (숫자로 측정 가능한 기준 명시)</span>
+              <span style="font-size: 0.76rem; color: #94a3b8;">* 변경 시 표준계약서 전문과 에스크로 예치액이 실시간 자동 연동됩니다.</span>
             </h5>
             
             <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
-              <!-- 1) 총 작업 투입 시간 -->
+              
+              <!-- 1. 전체 과업 계약 기간 (시작일과 종료일) -->
+              <div style="grid-column: 1 / -1; background: rgba(0, 0, 0, 0.25); padding: 14px 16px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.06);">
+                <label style="font-size: 0.88rem; color: #93c5fd; font-weight: 600; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                  <span>📅 1. 전체 과업 계약 기간 (시작일과 종료일)</span><span class="req">*</span>
+                </label>
+                <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                  <div style="flex: 1; min-width: 170px;">
+                    <span style="font-size: 0.76rem; color: #94a3b8; display: block; margin-bottom: 3px;">과업 시작일:</span>
+                    <input type="date" id="contractStartDate" value="2026-08-15" onchange="calcContractMetrics()" style="width: 100%; background: var(--input-bg); border: 1px solid var(--input-border); color: #ffffff; padding: 8px 12px; border-radius: 6px; font-family: inherit;">
+                  </div>
+                  <span style="color: #64748b; font-weight: bold; margin-top: 18px;">~</span>
+                  <div style="flex: 1; min-width: 170px;">
+                    <span style="font-size: 0.76rem; color: #94a3b8; display: block; margin-bottom: 3px;">과업 종료일:</span>
+                    <input type="date" id="contractEndDate" value="2026-09-14" onchange="calcContractMetrics()" style="width: 100%; background: var(--input-bg); border: 1px solid var(--input-border); color: #ffffff; padding: 8px 12px; border-radius: 6px; font-family: inherit;">
+                  </div>
+                  <div style="margin-top: 18px; background: rgba(59, 130, 246, 0.2); border: 1px solid rgba(59, 130, 246, 0.4); padding: 8px 14px; border-radius: 6px; color: #93c5fd; font-size: 0.82rem; font-weight: 600; white-space: nowrap;">
+                    ⏱️ 총 과업 기간: <span id="contractDurationDays" style="color: #ffffff;">31일간 (약 4주)</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 2-1. 총 산정 투입시간 -->
               <div>
-                <label for="contractHours" style="font-size: 0.85rem;">총 작업 투입 시간<span class="req">*</span></label>
+                <label for="contractHours" style="font-size: 0.85rem;">2-1. 총 산정 투입시간<span class="req">*</span></label>
                 <div style="display: flex; align-items: center; gap: 8px;">
                   <input type="number" id="contractHours" value="40" min="1" step="1" oninput="calcContractMetrics()" style="flex:1;">
                   <span style="color:#94a3b8; font-weight:600; white-space:nowrap;">시간</span>
@@ -1194,31 +1216,36 @@
                 <span style="font-size: 0.74rem; color: #64748b; margin-top: 4px; display: block;">(예: 주 10시간 × 4주 과업)</span>
               </div>
 
-              <!-- 2) 시간당 자문 단가 -->
+              <!-- 2-2. 시간당 자문 단가 -->
               <div>
-                <label for="contractRate" style="font-size: 0.85rem;">시간당 자문 단가<span class="req">*</span></label>
+                <label for="contractRate" style="font-size: 0.85rem;">2-2. 시간당 자문 단가<span class="req">*</span></label>
                 <div style="display: flex; align-items: center; gap: 8px;">
                   <input type="number" id="contractRate" value="150000" min="10000" step="10000" oninput="calcContractMetrics()" style="flex:1;">
                   <span style="color:#94a3b8; font-weight:600; white-space:nowrap;">원/시간</span>
                 </div>
-                <span style="font-size: 0.74rem; color: #64748b; margin-top: 4px; display: block;">(경력/도메인별 표준 단가)</span>
+                <span style="font-size: 0.74rem; color: #64748b; margin-top: 4px; display: block;">(시니어 어드바이저 표준 단가)</span>
               </div>
 
-              <!-- 3) 정기 회의 이행 기준 -->
+              <!-- 3. 정기 산출물 제출 주기 (일단위, 주단위, 격주단위, 월단위) -->
               <div>
-                <label style="font-size: 0.85rem;">정기 온라인 회의<span class="req">*</span></label>
-                <input type="text" id="contractMeetingFreq" value="주 1회 의무 참석 (시스템 화상 회의)" readonly style="background: rgba(0,0,0,0.3); color:#34d399; font-weight:600;">
-                <span style="font-size: 0.74rem; color: #64748b; margin-top: 4px; display: block;">(화상 회의 로그 및 회의록 기록)</span>
+                <label for="regularDeliverableFreq" style="font-size: 0.85rem;">3. 정기 산출물 제출 주기<span class="req">*</span></label>
+                <select id="regularDeliverableFreq" onchange="calcContractMetrics()" style="width: 100%; padding: 10px 12px; background: var(--input-bg); border: 1px solid var(--input-border); border-radius: 6px; color: var(--text-main); font-weight: 500;">
+                  <option value="일단위">일단위 (Daily - 일일 업무 로그 & 진행 점검)</option>
+                  <option value="주단위" selected>주단위 (Weekly - 주간 진척 보고서 & 정기 회의) [기본]</option>
+                  <option value="격주단위">격주단위 (Bi-weekly - 2주 단위 중간 산출물 보고)</option>
+                  <option value="월단위">월단위 (Monthly - 월간 마일스톤 종합 보고)</option>
+                </select>
+                <span style="font-size: 0.74rem; color: #34d399; margin-top: 4px; display: block;">✓ 시스템 내 파일 전달 및 회의 자동 기록</span>
               </div>
 
-              <!-- 4) 결과물 보고서 분량 -->
+              <!-- 4. 최종 산출물 분량 (보고서 형식 및 총 페이지 수) -->
               <div>
-                <label for="reportPages" style="font-size: 0.85rem;">결과물 최소 보고서 분량<span class="req">*</span></label>
+                <label for="reportPages" style="font-size: 0.85rem;">4. 최종 산출물 분량<span class="req">*</span></label>
                 <div style="display: flex; align-items: center; gap: 8px;">
                   <input type="number" id="reportPages" value="30" min="5" step="1" oninput="calcContractMetrics()" style="flex:1;">
                   <span style="color:#94a3b8; font-weight:600; white-space:nowrap;">페이지 이상</span>
                 </div>
-                <span style="font-size: 0.74rem; color: #64748b; margin-top: 4px; display: block;">(수치화된 정량 검수 기준)</span>
+                <span style="font-size: 0.74rem; color: #64748b; margin-top: 4px; display: block;">(수치화된 정량 검수 기준 - PDF 보고서)</span>
               </div>
             </div>
 
@@ -1239,16 +1266,17 @@
               <span style="font-size: 0.8rem; color: #94a3b8;">(Standard Advisory & Escrow Agreement)</span>
             </div>
 
-            <div style="font-size: 0.86rem; color: #cbd5e1; line-height: 1.85; max-height: 380px; overflow-y: auto; padding-right: 10px;">
+            <div style="font-size: 0.86rem; color: #cbd5e1; line-height: 1.85; max-height: 400px; overflow-y: auto; padding-right: 10px;">
               <p><strong>발주처 (주)테크솔루션앤파트너스</strong>(이하 "갑"이라 한다)와 <strong>자문 제공자 <span id="docAdvRealName">김철수</span></strong>(활동명: <span id="docAdvNickname">새벽공기 수석 어드바이저</span>, 이하 "을"이라 한다)는 상호 신의성실의 원칙에 따라 다음과 같이 시니어 자문 계약을 체결한다.</p>
 
               <h5 style="color: #93c5fd; margin: 14px 0 4px 0;">제1조 (목적 및 자문 범위)</h5>
               <p>본 계약은 "갑"의 사업 및 기술 과제에 관하여 "을"의 전문 도메인 지식과 실무 노하우를 바탕으로 전략 수립, 아키텍처 검토 및 기술 분석 자문을 제공함을 목적으로 한다.</p>
 
-              <h5 style="color: #93c5fd; margin: 14px 0 4px 0;">제2조 (정기 온라인 회의 참석 의무)</h5>
+              <h5 style="color: #93c5fd; margin: 14px 0 4px 0;">제2조 (과업 전체 기간 및 정기 산출물 제출 주기)</h5>
               <p>
-                1. "을"은 과업 기간 동안 <strong>1주일에 1회 이상 정기 온라인 화상 회의에 반드시 참석</strong>하여 과업 진행 상황을 공유하고 실시간 자문을 성실히 이행하여야 한다.<br>
-                2. 정기 회의 일정은 시스템 내 상호 협의 캘린더를 통해 최소 3일 전 확정하며, 회당 60분~90분 진행을 원칙으로 한다.
+                1. 본 계약의 전체 과업 기간은 <strong><span id="docPeriod" style="color: #38bdf8; font-weight: 600;">2026-08-15 ~ 2026-09-14 (총 31일간)</span></strong>으로 정한다.<br>
+                2. "을"은 과업 기간 동안 <strong><span id="docDeliverableFreq" style="color: #34d399; font-weight: 600;">주단위 (Weekly - 주간 보고서 & 정기 화상회의)</span></strong>로 정기 산출물 및 회의를 시스템을 통해 성실히 제출/이행하여야 한다.<br>
+                3. 정기 회의 일정은 시스템 내 상호 협의 캘린더를 통해 최소 3일 전 확정하며, 회당 60분~90분 진행을 원칙으로 한다.
               </p>
 
               <h5 style="color: #93c5fd; margin: 14px 0 4px 0;">제3조 (시스템 기반 공식 커뮤니케이션 원칙)</h5>
@@ -1265,19 +1293,19 @@
 
               <h5 style="color: #93c5fd; margin: 14px 0 4px 0;">제5조 (계약 대금 및 정량적 산정 기준)</h5>
               <p>
-                1. 본 계약의 총 자문 대금은 <strong>총 투입 시간(<span id="docHours">40</span>시간) × 시간당 단가(<span id="docRate">150,000</span>원) = 총 <span id="docPrice">6,000,000</span>원(VAT 별도)</strong>으로 명확히 산정한다.<br>
+                1. 본 계약의 총 자문 대금은 <strong>총 산정 투입시간(<span id="docHours">40</span>시간) × 시간당 단가(<span id="docRate">150,000</span>원) = 총 <span id="docPrice">6,000,000</span>원(VAT 별도)</strong>으로 명확히 산정한다.<br>
                 2. "갑"은 계약 체결과 동시에 총 대금을 플랫폼 에스크로 계좌에 100% 안전 예치하여 "을"의 정산 안전성을 보장한다.
               </p>
 
-              <h5 style="color: #93c5fd; margin: 14px 0 4px 0;">제6조 (결과물 제출 및 정량적 측정 기준)</h5>
+              <h5 style="color: #93c5fd; margin: 14px 0 4px 0;">제6조 (최종 산출물 제출 및 정량적 측정 기준)</h5>
               <p>
-                1. "을"이 "갑"에게 제출하는 최종 자문 산출물은 <strong>공식 자문 보고서 형식</strong>으로 작성하며, 그 분량은 <strong>총 <span id="docPages">30</span>페이지 이상(요약본, 아키텍처 다이어그램 및 세부 권고사항 명세서 포함)</strong>으로 명확히 수치화하여 측정한다.<br>
-                2. 최종 보고서는 계약 종료 3영업일 전까지 시스템을 통해 전자문서(PDF)로 제출되어야 한다.
+                1. "을"이 "갑"에게 제출하는 최종 자문 산출물은 <strong>공식 자문 보고서 형식</strong>으로 작성하며, 그 분량은 <strong>총 <span id="docPages">30</span>페이지 이상(요약본, 분석 본문, 아키텍처 다이어그램 및 세부 권고사항 명세서 포함)</strong>으로 명확히 수치화하여 측정한다.<br>
+                2. 최종 산출물은 과업 종료일 3영업일 전까지 시스템을 통해 전자문서(PDF)로 제출되어야 한다.
               </p>
 
               <h5 style="color: #93c5fd; margin: 14px 0 4px 0;">제7조 (검수 승인 및 에스크로 정산 지급)</h5>
               <p>
-                1. "갑"은 최종 보고서 수령 후 5영업일 이내에 제2조(주 1회 회의 이행) 및 제6조(보고서 총 페이지 수 및 과업 내용)에 부합하는지 정량 검수를 진행한다.<br>
+                1. "갑"은 최종 산출물 수령 후 5영업일 이내에 제2조(과업 기간 및 정기 산출물 이행) 및 제6조(최종 보고서 총 페이지 수 및 과업 내용)에 부합하는지 정량 검수를 진행한다.<br>
                 2. "갑"의 검수 승인 완료 시 에스크로 락업이 즉시 해제되어 "을"에게 대금이 정산 지급된다.
               </p>
 
@@ -1335,8 +1363,10 @@
               • <strong>발주처 [갑]:</strong> (주)테크솔루션앤파트너스 (대표: 홍원택)<br>
               • <strong>자문인 [을]:</strong> <span id="signedAdvRealName" style="font-weight:600; color:#ffffff;">김철수</span> (고유 UUID: <code id="signedAdvUUID" style="color:#a5b4fc;">6059dc9c-a2e2-5dfb-bb0b-db398d0b7b1d</code>)<br>
               • <strong>시스템 활동 닉네임:</strong> <span id="signedAdvNickname" style="color:#34d399; font-weight:600;">새벽공기 수석 어드바이저</span><br>
-              • <strong>합의된 정량 과업 조건:</strong> 총 <span id="signedHours" style="color:#60a5fa; font-weight:bold;">40</span>시간 투입 (시간당 <span id="signedRate">150,000</span>원) | <strong>주 1회 온라인 회의</strong> 의무 참석 | 최종 보고서 <strong><span id="signedPages" style="color:#34d399; font-weight:bold;">30</span>페이지 이상</strong><br>
-              • <strong>에스크로 예치 금액:</strong> <span id="signedPrice" style="color: #34d399; font-weight: 700; font-size:1.05rem;">6,000,000 원</span> (100% 안전 에스크로 락업 완료)<br>
+              • <strong>1. 전체 과업 기간:</strong> <span id="signedPeriod" style="color:#38bdf8; font-weight:bold;">2026-08-15 ~ 2026-09-14 (총 31일간)</span><br>
+              • <strong>2. 총 투입시간 및 단가:</strong> 총 <span id="signedHours" style="color:#60a5fa; font-weight:bold;">40</span>시간 투입 (시간당 <span id="signedRate">150,000</span>원) | 총 에스크로 예치금 <span id="signedPrice" style="color: #34d399; font-weight: 700;">6,000,000 원</span><br>
+              • <strong>3. 정기 산출물 제출 주기:</strong> <span id="signedFreq" style="color:#a7f3d0; font-weight:600;">주단위 (주간 진척 보고서 및 온라인 회의)</span><br>
+              • <strong>4. 최종 산출물 분량:</strong> 총 <span id="signedPages" style="color:#34d399; font-weight:bold;">30</span>페이지 이상 (공식 PDF 자문 보고서 및 설계 명세서)<br>
               • <strong>적용 계약서:</strong> 시니어 어드바이저 표준계약서 (제1조~제8조) + [별첨 특수합의사항]<br>
               • <strong>전자서명 해시 검증값:</strong> <code style="color: #93c5fd; font-size:0.8rem;" id="signedHashSeal">e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855</code>
             </div>
@@ -1349,26 +1379,27 @@
       <div class="card">
         <div class="card-title">🤖 AI 가이드 챗봇 분쟁조정 (Dispute Resolution Guide)</div>
         <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 12px;">
-          자문 계약 수행 중 불이행, 일정 지연, 보고서 페이지 수 미달 등 분쟁 발생 시 <strong>AI 분쟁조정 Agent가 개입</strong>하여 <strong>표준계약서 조항 및 시스템 기록(주 1회 회의 로그, 전달 보고서 페이지 수, 채팅 데이터)</strong>만을 객관적 근거로 분석하고 공정한 중재안을 제시합니다.
+          자문 계약 수행 중 불이행, 일정 지연, 보고서 페이지 수 미달 등 분쟁 발생 시 <strong>AI 분쟁조정 Agent가 개입</strong>하여 <strong>표준계약서 4대 정량 조건(과업 기간, 투입시간/단가, 정기 산출물 주기, 최종 보고서 분량) 및 시스템 기록</strong>만을 객관적 근거로 분석하고 공정한 중재안을 제시합니다.
         </p>
 
         <!-- Quick Scenario Simulation Buttons -->
         <div style="display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap;">
           <span style="font-size: 0.8rem; color: #94a3b8; display: flex; align-items: center;">빠른 시나리오 테스트:</span>
-          <button type="button" class="btn-scenario" onclick="runDisputeScenario(1)">📄 시나리오 1: 보고서 분량 미달 (15p 제출)</button>
-          <button type="button" class="btn-scenario" onclick="runDisputeScenario(2)">📅 시나리오 2: 주 1회 회의 1회 누락</button>
-          <button type="button" class="btn-scenario" onclick="runDisputeScenario(3)">📱 시나리오 3: 사적 메신저 구두 합의 분쟁</button>
-          <button type="button" class="btn-scenario" onclick="runDisputeScenario(4)">⚖️ 시나리오 4: 별첨 A/S 무상 자문 이행</button>
+          <button type="button" class="btn-scenario" onclick="runDisputeScenario(1)">📄 시나리오 1: 최종 산출물 분량 미달 (15p 제출)</button>
+          <button type="button" class="btn-scenario" onclick="runDisputeScenario(2)">📅 시나리오 2: 정기 산출물 제출 1회 누락</button>
+          <button type="button" class="btn-scenario" onclick="runDisputeScenario(3)">⏰ 시나리오 3: 과업 종료일 초과 지연 분쟁</button>
+          <button type="button" class="btn-scenario" onclick="runDisputeScenario(4)">📱 시나리오 4: 사적 메신저 구두 합의 분쟁</button>
+          <button type="button" class="btn-scenario" onclick="runDisputeScenario(5)">⚖️ 시나리오 5: 별첨 A/S 무상 자문 이행</button>
         </div>
 
         <div class="chat-box" style="height: 380px;">
           <div class="chat-messages" id="disputeChatMessages">
             <div class="chat-msg msg-received" style="background-color: #1e1b4b; border: 1px solid #4338ca;">
-              <strong>🤖 AI 분쟁조정 가이드:</strong> 안녕하세요! 시니어 어드바이저 AI 분쟁조정 Agent입니다. 표준계약서(제4조)에 의거하여 시스템 내 공식 데이터(주 1회 회의 참석 로그, 전달된 보고서 페이지 수, 시스템 채팅 이력)만을 바탕으로 중재안을 제시합니다. 분쟁 사안을 입력하시거나 상단 시나리오 버튼을 클릭해 주세요.
+              <strong>🤖 AI 분쟁조정 가이드:</strong> 안녕하세요! 시니어 어드바이저 AI 분쟁조정 Agent입니다. 표준계약서(제4조)에 의거하여 시스템 내 공식 데이터(전체 과업 기간, 정기 산출물 제출 로그, 최종 보고서 페이지 수 실측치, 시스템 채팅 이력)만을 바탕으로 공정한 중재안을 제시합니다. 분쟁 사안을 입력하시거나 상단 시나리오 버튼을 클릭해 주세요.
             </div>
           </div>
           <div class="chat-input-area">
-            <input type="text" id="disputeChatInput" placeholder="분쟁 관련 내용을 입력하세요 (예: 보고서가 15페이지만 제출되었고 주 1회 회의 1회가 누락되었습니다)..." onkeypress="if(event.key==='Enter') sendDisputeMsg()">
+            <input type="text" id="disputeChatInput" placeholder="분쟁 관련 내용을 입력하세요 (예: 과업 기간이 종료되었으나 최종 산출물이 미제출되었습니다)..." onkeypress="if(event.key==='Enter') sendDisputeMsg()">
             <button class="btn-action-msg" style="background-color: #6366f1;" onclick="sendDisputeMsg()">분쟁조정 신청</button>
           </div>
         </div>
@@ -4256,10 +4287,26 @@
       if (document.getElementById("docAdvNickname")) document.getElementById("docAdvNickname").innerText = currentAdvisorProfile.nickname;
     }
 
-    // Interactive Contract Metrics Calculation (Total Hours * Hourly Rate)
+    // Interactive 4 Contract Metrics Calculation (Period, Hours/Rate, Frequency, Pages)
     function calcContractMetrics() {
+      var startDate = document.getElementById("contractStartDate") ? document.getElementById("contractStartDate").value : "2026-08-15";
+      var endDate = document.getElementById("contractEndDate") ? document.getElementById("contractEndDate").value : "2026-09-14";
+      
+      // Calculate date diff in days and weeks
+      var startObj = new Date(startDate);
+      var endObj = new Date(endDate);
+      var diffTime = endObj.getTime() - startObj.getTime();
+      var diffDays = Math.max(1, Math.round(diffTime / (1000 * 3600 * 24)) + 1);
+      var diffWeeks = Math.max(1, Math.round(diffDays / 7));
+      
+      var durationText = diffDays + "일간 (약 " + diffWeeks + "주)";
+      if (document.getElementById("contractDurationDays")) {
+        document.getElementById("contractDurationDays").innerText = durationText;
+      }
+      
       var hours = parseInt(document.getElementById("contractHours").value) || 0;
       var rate = parseInt(document.getElementById("contractRate").value) || 0;
+      var freq = document.getElementById("regularDeliverableFreq") ? document.getElementById("regularDeliverableFreq").value : "주단위";
       var pages = parseInt(document.getElementById("reportPages").value) || 30;
 
       var total = hours * rate;
@@ -4270,6 +4317,14 @@
       if (document.getElementById("calcFormula")) document.getElementById("calcFormula").innerText = `${hours}시간 × ${rate.toLocaleString("ko-KR")}원`;
       
       // Update Standard Contract Agreement Text in Real-time
+      if (document.getElementById("docPeriod")) document.getElementById("docPeriod").innerText = `${startDate} ~ ${endDate} (총 ${diffDays}일간)`;
+      
+      var freqDetailText = freq === "일단위" ? "일단위 (Daily - 일일 업무 로그 & 진행 점검)" : 
+                           freq === "주단위" ? "주단위 (Weekly - 주간 진척 보고서 & 정기 회의)" : 
+                           freq === "격주단위" ? "격주단위 (Bi-weekly - 2주 단위 중간 산출물 보고)" : 
+                           "월단위 (Monthly - 월간 마일스톤 종합 보고)";
+      if (document.getElementById("docDeliverableFreq")) document.getElementById("docDeliverableFreq").innerText = freqDetailText;
+
       if (document.getElementById("docHours")) document.getElementById("docHours").innerText = hours;
       if (document.getElementById("docRate")) document.getElementById("docRate").innerText = formattedRate;
       if (document.getElementById("docPrice")) document.getElementById("docPrice").innerText = formattedTotal;
@@ -4374,8 +4429,7 @@
 
       // Automatically switch to search tab to see the newly registered card
       setTimeout(function() {
-        const searchTabBtn = document.querySelector('.tab-btn[data-tab="tab-search"]');
-        if (searchTabBtn) searchTabBtn.click();
+        switchTab('tab-search');
       }, 700);
     }
 
@@ -4477,15 +4531,22 @@
       var outputBox = document.getElementById("finalContractResult");
       if (!outputBox) return;
 
+      var startDate = document.getElementById("contractStartDate") ? document.getElementById("contractStartDate").value : "2026-08-15";
+      var endDate = document.getElementById("contractEndDate") ? document.getElementById("contractEndDate").value : "2026-09-14";
+      var startObj = new Date(startDate);
+      var endObj = new Date(endDate);
+      var diffDays = Math.max(1, Math.round((endObj.getTime() - startObj.getTime()) / (1000 * 3600 * 24)) + 1);
+
       var hours = parseInt(document.getElementById("contractHours").value) || 40;
       var rate = parseInt(document.getElementById("contractRate").value) || 150000;
+      var freq = document.getElementById("regularDeliverableFreq") ? document.getElementById("regularDeliverableFreq").value : "주단위";
       var pages = parseInt(document.getElementById("reportPages").value) || 30;
       var total = hours * rate;
 
       var contractId = "SC-" + new Date().toISOString().slice(0, 10).replace(/-/g, "") + "-" + Math.random().toString(36).substring(2, 6).toUpperCase();
 
-      // Compute verification signature hash
-      var sealRaw = `${contractId}#${currentAdvisorProfile.realName}#${currentAdvisorProfile.uuid}#${total}#${pages}#2026-08-14`;
+      // Compute verification signature hash with all 4 metrics
+      var sealRaw = `${contractId}#${currentAdvisorProfile.realName}#${currentAdvisorProfile.uuid}#${startDate}~${endDate}#${hours}h#${freq}#${total}#${pages}p`;
       var sealHash = await computeSHA256Hex(sealRaw);
 
       outputBox.style.display = "block";
@@ -4494,8 +4555,11 @@
       if (document.getElementById("signedAdvRealName")) document.getElementById("signedAdvRealName").innerText = currentAdvisorProfile.realName;
       if (document.getElementById("signedAdvUUID")) document.getElementById("signedAdvUUID").innerText = currentAdvisorProfile.uuid;
       if (document.getElementById("signedAdvNickname")) document.getElementById("signedAdvNickname").innerText = currentAdvisorProfile.nickname;
+      
+      if (document.getElementById("signedPeriod")) document.getElementById("signedPeriod").innerText = `${startDate} ~ ${endDate} (총 ${diffDays}일간)`;
       if (document.getElementById("signedHours")) document.getElementById("signedHours").innerText = hours;
       if (document.getElementById("signedRate")) document.getElementById("signedRate").innerText = rate.toLocaleString("ko-KR") + " 원";
+      if (document.getElementById("signedFreq")) document.getElementById("signedFreq").innerText = freq + " (정기 진척 보고서 및 회의)";
       if (document.getElementById("signedPages")) document.getElementById("signedPages").innerText = pages;
       if (document.getElementById("signedPrice")) document.getElementById("signedPrice").innerText = total.toLocaleString("ko-KR") + " 원";
       if (document.getElementById("signedHashSeal")) document.getElementById("signedHashSeal").innerText = sealHash;
@@ -4508,12 +4572,14 @@
     function runDisputeScenario(scId) {
       var input = document.getElementById("disputeChatInput");
       if (scId === 1) {
-        input.value = "최종 결과 보고서가 계약서상 약정된 30페이지가 아닌 15페이지만 제출되었습니다. 에스크로 정산 조정 요청합니다.";
+        input.value = "최종 산출물 보고서가 계약서상 약정된 분량(30페이지)에 미달하여 15페이지만 제출되었습니다. 에스크로 정산 조정 요청합니다.";
       } else if (scId === 2) {
-        input.value = "과업 기간 4주 동안 약정된 주 1회 온라인 화상 회의 중 3주차 회의 1회가 어드바이저 사정으로 누락되었습니다.";
+        input.value = "약정된 정기 산출물 제출 주기(주단위)에 따른 주간 진척 보고서 및 화상 회의 1회가 누락되었습니다.";
       } else if (scId === 3) {
-        input.value = "어드바이저가 개인 카카오톡 메신저로 추가 개발 자문을 구두 합의했다고 주장합니다. 시스템에는 기록이 없습니다.";
+        input.value = "전체 계약 기간(종료일 2026-09-14)이 경과하였으나 최종 산출물이 전달되지 않고 지연되었습니다.";
       } else if (scId === 4) {
+        input.value = "어드바이저가 개인 카카오톡 메신저로 추가 개발 자문을 구두 합의했다고 주장합니다. 시스템에는 기록이 없습니다.";
+      } else if (scId === 5) {
         input.value = "별첨 특수합의 조항에 명시된 자문 종료 후 3개월 내 2회 무상 A/S 서면 자문 이행을 요청합니다.";
       }
       sendDisputeMsg();
@@ -4552,17 +4618,22 @@
       var analysisText = "";
 
       if (lowerMsg.includes("15페이지") || lowerMsg.includes("페이지") || lowerMsg.includes("분량") || lowerMsg.includes("미달")) {
-        analysisText = "<strong>🤖 AI 분쟁조정 Agent 판정 결과 [사안: 결과물 분량 미달]:</strong><br/>" +
-          "• <strong>표준계약서 적용 조항:</strong> 제6조 제1항 (최종 보고서 총 30페이지 이상 명시)<br/>" +
+        analysisText = "<strong>🤖 AI 분쟁조정 Agent 판정 결과 [사안: 4. 최종 산출물 분량 미달]:</strong><br/>" +
+          "• <strong>표준계약서 적용 조항:</strong> 제6조 제1항 (최종 산출물 공식 보고서 총 30페이지 이상 명시)<br/>" +
           "• <strong>시스템 데이터 검증:</strong> 시스템에 업로드된 파일 <code style='color:#38bdf8;'>Advisory_Final_Report.pdf</code>의 실측 분량은 <strong>총 15페이지</strong>로 약정 기준(30페이지) 대비 50% 미달 확인.<br/>" +
           "• <strong>AI 중재 권고안:</strong><br/>" +
           "  1) [을]에게 3영업일의 보완 기간을 부여하여 누락된 아키텍처 다이어그램 및 세부 명세서 15페이지 추가 작성을 명령함.<br/>" +
           "  2) 기한 내 보완 완료 시 에스크로 예치금 100% 정상 지급, 미보완 시 에스크로 예치금의 50% 감액 정산 후 잔여 50% 발주처 환불 권고.";
-      } else if (lowerMsg.includes("누락") || lowerMsg.includes("회의") || lowerMsg.includes("주 1회") || lowerMsg.includes("불참")) {
-        analysisText = "<strong>🤖 AI 분쟁조정 Agent 판정 결과 [사안: 정기 온라인 회의 불참]:</strong><br/>" +
-          "• <strong>표준계약서 적용 조항:</strong> 제2조 제1항 (1주일에 1회 정기 온라인 화상 회의 의무 참석)<br/>" +
-          "• <strong>시스템 로그 검증:</strong> 플랫폼 화상 컨퍼런스 접속 로그 분석 결과, 1주차(72분), 2주차(80분), 4주차(65분) 참석 완료 / <strong>3주차(0분, 미개설) 확인</strong>.<br/>" +
-          "• <strong>AI 중재 권고안:</strong> 총 4회 중 1회(25%) 회의 미참석에 해당하므로, 과업 기간 1주일 연장을 통한 보충 화상회의 1회(60분) 즉시 이행 권고 (보충 회의 완료 시 에스크로 전액 지급).";
+      } else if (lowerMsg.includes("누락") || lowerMsg.includes("회의") || lowerMsg.includes("주단위") || lowerMsg.includes("정기 산출물") || lowerMsg.includes("주기")) {
+        analysisText = "<strong>🤖 AI 분쟁조정 Agent 판정 결과 [사안: 3. 정기 산출물 제출 주기 누락]:</strong><br/>" +
+          "• <strong>표준계약서 적용 조항:</strong> 제2조 제2항 (약정된 정기 산출물 주기 및 온라인 회의 성실 이행)<br/>" +
+          "• <strong>시스템 로그 검증:</strong> 플랫폼 산출물 제출함 및 화상 컨퍼런스 로그 분석 결과, 1주차·2주차·4주차 제출 완료 / <strong>3주차 정기 산출물 미제출 확인</strong>.<br/>" +
+          "• <strong>AI 중재 권고안:</strong> 총 4회 중 1회(25%) 정기 산출물 미제출에 해당하므로, 과업 기간 1주일 연장을 통한 보충 산출물 제출 및 화상회의 1회(60분) 즉시 이행 권고 (보충 완료 시 에스크로 전액 지급).";
+      } else if (lowerMsg.includes("기간") || lowerMsg.includes("종료일") || lowerMsg.includes("지연") || lowerMsg.includes("초과")) {
+        analysisText = "<strong>🤖 AI 분쟁조정 Agent 판정 결과 [사안: 1. 전체 과업 기간 초과 지연]:</strong><br/>" +
+          "• <strong>표준계약서 적용 조항:</strong> 제2조 제1항 (과업 전체 기간: 2026-08-15 ~ 2026-09-14) 및 제6조 제2항<br/>" +
+          "• <strong>시스템 로그 검증:</strong> 계약 종료일(2026-09-14 23:59) 기준 시스템 상 최종 보고서 미등록 상태 확인.<br/>" +
+          "• <strong>AI 중재 권고안:</strong> 불가항력 사유가 입증되지 않는 한, 지체일수당 총 계약금의 0.25% 지체상금을 일할 공제하고 정산할 것을 권고함.";
       } else if (lowerMsg.includes("카카오톡") || lowerMsg.includes("메신저") || lowerMsg.includes("구두") || lowerMsg.includes("사적")) {
         analysisText = "<strong>🤖 AI 분쟁조정 Agent 판정 결과 [사안: 시스템 외 사적 구두 합의 분쟁]:</strong><br/>" +
           "• <strong>표준계약서 적용 조항:</strong> 제3조 제1항 및 제4조 제1항/제2항 (시스템 기록의 유일한 증빙 원칙)<br/>" +
@@ -4575,7 +4646,7 @@
           "• <strong>AI 중재 권고안:</strong> 어드바이저(" + currentAdvisorProfile.shortId + ")는 별첨 특수합의에 따라 발주처의 기술 문의에 48시간 이내 1차 무상 서면 답변서를 시스템을 통해 제출할 것을 명함.";
       } else {
         analysisText = "<strong>🤖 AI 분쟁조정 Agent 분석 완료:</strong><br/>" +
-          "표준계약서(제1조~제8조) 및 시스템 상에 기록된 <strong>주 1회 화상회의 로그, 전달 보고서 페이지 수, 텍스트/음성 채팅 기록</strong>을 바탕으로 정밀 조사를 진행했습니다.<br/>" +
+          "표준계약서 4대 정량 기준(전체 과업 기간, 투입시간/단가, 정기 산출물 주기, 최종 산출물 분량) 및 시스템 기록을 바탕으로 정밀 조사를 진행했습니다.<br/>" +
           "• <strong>조정 방향:</strong> 시스템 내 정량적 산출물 검증 후 에스크로 락업 해제 또는 과업 보완 명령을 즉시 통보합니다.";
       }
 
