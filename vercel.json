@@ -3,10 +3,9 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "rewrites": [
-    { "source": "/pj01", "destination": "/pj01/index.html" },
-    { "source": "/pj01/", "destination": "/pj01/index.html" },
-    { "source": "/pj02", "destination": "/pj02/index.html" },
-    { "source": "/pj02/", "destination": "/pj02/index.html" }
+    { "source": "/:project(pj[0-9]+|[a-zA-Z0-9_-]+)", "destination": "/:project/index.html" },
+    { "source": "/:project(pj[0-9]+|[a-zA-Z0-9_-]+)/", "destination": "/:project/index.html" },
+    { "source": "/:project(pj[0-9]+|[a-zA-Z0-9_-]+)/:path*", "destination": "/:project/:path*" }
   ],
   "headers": [
     {
