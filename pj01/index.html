@@ -217,6 +217,79 @@
       border-color: var(--primary);
     }
 
+    /* Help Tooltip Button & Popover */
+    .help-wrap {
+      display: inline-flex;
+      position: relative;
+      align-items: center;
+      vertical-align: middle;
+    }
+
+    .help-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 17px;
+      height: 17px;
+      border-radius: 50%;
+      background: rgba(99, 102, 241, 0.25);
+      color: #a5b4fc;
+      border: 1px solid rgba(99, 102, 241, 0.5);
+      font-size: 0.72rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-left: 6px;
+      line-height: 1;
+      transition: all 0.2s ease;
+      user-select: none;
+      padding: 0;
+    }
+
+    .help-btn:hover, .help-btn.active {
+      background: #6366f1;
+      color: #ffffff;
+      border-color: #818cf8;
+      transform: scale(1.1);
+    }
+
+    .help-box {
+      display: none;
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1e293b;
+      color: #f1f5f9;
+      border: 1px solid #6366f1;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 0.8rem;
+      font-weight: normal;
+      line-height: 1.5;
+      width: 260px;
+      max-width: 85vw;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      z-index: 999;
+      pointer-events: auto;
+      text-align: left;
+      animation: popIn 0.15s ease-out;
+    }
+
+    .help-box::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 6px;
+      border-style: solid;
+      border-color: #6366f1 transparent transparent transparent;
+    }
+
+    .help-box.show {
+      display: block;
+    }
+
     /* Selected Category Chips */
     .cat-chip {
       background-color: rgba(59, 130, 246, 0.2);
@@ -608,13 +681,17 @@
         <form id="advisorForm">
           
           <!-- 1. 개인정보 (4-Factor 결합 해시 & UUID 생성) -->
-          <div class="form-group full-width" style="background: linear-gradient(135deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.95)); border: 1px solid rgba(99, 102, 241, 0.35); border-radius: 12px; padding: 22px; margin-bottom: 24px; box-shadow: 0 4px 16px rgba(0,0,0,0.25);">
+          <div class="form-group full-width" style="background: linear-gradient(135deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.95)); border: 1px solid rgba(99, 102, 241, 0.35); border-radius: 12px; padding: 20px; margin-bottom: 24px; box-shadow: 0 4px 16px rgba(0,0,0,0.25);">
             
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
-              <div style="display: flex; align-items: center; gap: 8px;">
-                <span style="font-size: 1.25rem;">🔐</span>
-                <h3 style="font-size: 1.05rem; color: #ffffff; margin: 0; font-weight: 700;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 8px;">
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <span style="font-size: 1.2rem;">🔐</span>
+                <h3 style="font-size: 1.05rem; color: #ffffff; margin: 0; font-weight: 700; display: inline-flex; align-items: center;">
                   1. 개인정보 (Personal Information)
+                  <span class="help-wrap">
+                    <button type="button" class="help-btn" onclick="toggleHelp(event, 'help-sec1')" title="상세 설명 보기">?</button>
+                    <span class="help-box" id="help-sec1">💡 [실명 + 모바일번호 + 닉네임 + 이메일주소] 4가지를 조합하여 전역 유니크 SHA-256 해시 UUID를 자동 발급합니다. 실명과 연락처는 계약 전용으로 암호화 보관됩니다.</span>
+                  </span>
                 </h3>
               </div>
               <span style="font-size: 0.78rem; background: rgba(99, 102, 241, 0.2); color: #a5b4fc; border: 1px solid rgba(99, 102, 241, 0.4); padding: 4px 12px; border-radius: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px;">
@@ -622,64 +699,67 @@
               </span>
             </div>
 
-            <p style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 18px; line-height: 1.6;">
-              💡 <strong>[실명 + 모바일번호 + 닉네임 + 이메일주소]</strong> 4가지 고유 정보를 조합하여 <strong>전역 유니크(Unique) 해시 UUID</strong>를 자동 발급합니다.<br>
-              🔒 <strong>프라이버시 분리 원칙:</strong> 실명과 모바일번호는 시스템에 공개되지 않고 <strong>전자계약 체결 시에만 암호화</strong>되어 사용되며, 플랫폼 활동(검색, 상담, 평가)은 <strong>닉네임과 발급된 고유 UUID(Adv-XXXX)</strong>로만 안전하게 진행됩니다.
-            </p>
-
             <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
               
               <!-- 1) 실명 -->
               <div>
-                <label for="advRealName">
-                  이름 (실명, 실제사용하지 않고 계약에서만 사용)<span class="req">*</span>
+                <label for="advRealName" style="display: flex; align-items: center;">
+                  <span>이름 (계약에서만 사용)<span class="req">*</span></span>
+                  <span class="help-wrap">
+                    <button type="button" class="help-btn" onclick="toggleHelp(event, 'help-name')" title="설명 보기">?</button>
+                    <span class="help-box" id="help-name">🔒 플랫폼 서비스 화면에는 미노출되며, 스마트 전자계약 체결 및 에스크로 정산 시에만 법적 효력으로 사용됩니다.</span>
+                  </span>
                 </label>
                 <input type="text" id="advRealName" placeholder="예: 김철수 (법적 실명)" required oninput="generateAdvisorUUID()">
-                <span style="font-size: 0.76rem; color: #64748b; display: block; margin-top: 4px;">
-                  ※ 플랫폼 미노출, 전자계약 체결 및 에스크로 정산 시에만 사용
-                </span>
               </div>
 
               <!-- 2) 닉네임 -->
               <div>
-                <label for="advNickname">
-                  닉네임 (시스템에서는 닉네임 사용)<span class="req">*</span>
+                <label for="advNickname" style="display: flex; align-items: center;">
+                  <span>닉네임 (시스템에서는 닉네임 사용)<span class="req">*</span></span>
+                  <span class="help-wrap">
+                    <button type="button" class="help-btn" onclick="toggleHelp(event, 'help-nick')" title="설명 보기">?</button>
+                    <span class="help-box" id="help-nick">🌐 프로필 카드, 검색 화면, 1:1 메시지 및 화상 컨퍼런스 시 외부에 공식 노출되는 대표 활동명입니다.</span>
+                  </span>
                 </label>
                 <input type="text" id="advNickname" placeholder="예: 새벽공기, 테크마스터" required oninput="generateAdvisorUUID()">
-                <span style="font-size: 0.76rem; color: #64748b; display: block; margin-top: 4px;">
-                  ※ 프로필, 검색 화면, 1:1 상담 시 공식 표시되는 닉네임
-                </span>
               </div>
 
               <!-- 3) 이메일 -->
               <div>
-                <label for="advEmail">
-                  이메일 (Email)<span class="req">*</span>
+                <label for="advEmail" style="display: flex; align-items: center;">
+                  <span>이메일 (Email)<span class="req">*</span></span>
+                  <span class="help-wrap">
+                    <button type="button" class="help-btn" onclick="toggleHelp(event, 'help-email')" title="설명 보기">?</button>
+                    <span class="help-box" id="help-email">✉️ 자문 요청 실시간 알림 수신 및 공식 전자계약서 교부 수신용 이메일입니다.</span>
+                  </span>
                 </label>
                 <input type="email" id="advEmail" placeholder="예: advisor.kim@domain.com" required oninput="generateAdvisorUUID()">
-                <span style="font-size: 0.76rem; color: #64748b; display: block; margin-top: 4px;">
-                  ※ 자문 요청 알림 및 공식 전자계약서 교부 수신용
-                </span>
               </div>
 
               <!-- 4) 모바일번호 -->
               <div>
-                <label for="advPhone">
-                  모바일번호 (Mobile Phone)<span class="req">*</span>
+                <label for="advPhone" style="display: flex; align-items: center;">
+                  <span>모바일번호 (Mobile Phone)<span class="req">*</span></span>
+                  <span class="help-wrap">
+                    <button type="button" class="help-btn" onclick="toggleHelp(event, 'help-phone')" title="설명 보기">?</button>
+                    <span class="help-box" id="help-phone">📱 본인 인증 및 긴급 알림 전용이며, 시스템 화면에는 일체 노출되지 않습니다.</span>
+                  </span>
                 </label>
                 <input type="text" id="advPhone" placeholder="예: 010-1234-5678" required oninput="generateAdvisorUUID()">
-                <span style="font-size: 0.76rem; color: #64748b; display: block; margin-top: 4px;">
-                  ※ 본인 인증 및 긴급 알림 전용 (화면 미노출)
-                </span>
               </div>
 
             </div>
 
             <!-- 실시간 해시 & 고유 UUID 생성 결과 박스 -->
-            <div style="margin-top: 18px; padding: 14px 16px; background-color: rgba(15, 23, 42, 0.95); border: 1px dashed rgba(99, 102, 241, 0.45); border-radius: 8px;">
+            <div style="margin-top: 16px; padding: 12px 16px; background-color: rgba(15, 23, 42, 0.95); border: 1px dashed rgba(99, 102, 241, 0.45); border-radius: 8px;">
               <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; flex-wrap: wrap; gap: 6px;">
-                <span style="font-size: 0.85rem; font-weight: 700; color: #c7d2fe; display: flex; align-items: center; gap: 6px;">
+                <span style="font-size: 0.85rem; font-weight: 700; color: #c7d2fe; display: inline-flex; align-items: center;">
                   <span>⚡ 4-Factor 결합 해시 & 발급된 고유 UUID</span>
+                  <span class="help-wrap">
+                    <button type="button" class="help-btn" onclick="toggleHelp(event, 'help-uuid')" title="설명 보기">?</button>
+                    <span class="help-box" id="help-uuid">실명, 모바일, 닉네임, 이메일을 결합하여 SHA-256 단방향 암호화 해싱으로 생성된 고유 식별코드입니다.</span>
+                  </span>
                 </span>
                 <span id="uuidStatusBadge" style="font-size: 0.75rem; padding: 2px 8px; border-radius: 6px; background: rgba(148, 163, 184, 0.2); color: #94a3b8;">
                   정보 입력 대기 중
@@ -693,13 +773,13 @@
 
               <!-- 생성된 UUID 및 단축 ID -->
               <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap; background: rgba(0, 0, 0, 0.35); padding: 10px 14px; border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.05);">
-                <div style="flex: 1; min-width: 260px;">
+                <div style="flex: 1; min-width: 240px;">
                   <span style="font-size: 0.75rem; color: #818cf8; font-weight: 600; display: block; margin-bottom: 2px;">생성된 고유 UUID (Unique UUID v5):</span>
-                  <code id="generatedUUID" style="font-size: 0.95rem; color: #38bdf8; font-weight: bold; letter-spacing: 0.5px;">-</code>
+                  <code id="generatedUUID" style="font-size: 0.92rem; color: #38bdf8; font-weight: bold; letter-spacing: 0.5px;">-</code>
                 </div>
                 <div style="border-left: 1px solid rgba(255, 255, 255, 0.1); padding-left: 14px;">
                   <span style="font-size: 0.75rem; color: #34d399; font-weight: 600; display: block; margin-bottom: 2px;">시스템 단축 식별코드:</span>
-                  <code id="generatedShortId" style="font-size: 0.95rem; color: #34d399; font-weight: bold;">-</code>
+                  <code id="generatedShortId" style="font-size: 0.92rem; color: #34d399; font-weight: bold;">-</code>
                 </div>
               </div>
             </div>
@@ -708,8 +788,13 @@
           
           <!-- 2. 전문분야 (최대 3개 선택) -->
           <div class="form-group full-width">
-            <label for="mainIndustrySelect">
-              2. 전문분야 (Sector) - <span style="color: #60a5fa;" id="categoryCount">최대 3개까지 선택 가능 (0/3)</span><span class="req">*</span>
+            <label for="mainIndustrySelect" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;">
+              <span>2. 전문분야 (Sector) - <span style="color: #60a5fa;" id="categoryCount">최대 3개까지 선택 가능 (0/3)</span><span class="req">*</span>
+                <span class="help-wrap">
+                  <button type="button" class="help-btn" onclick="toggleHelp(event, 'help-sec2')" title="설명 보기">?</button>
+                  <span class="help-box" id="help-sec2">본인의 핵심 전문 산업 분야를 최대 3개까지 선택하거나 기타 입력으로 직접 추가할 수 있습니다.</span>
+                </span>
+              </span>
             </label>
             
             <div style="display: flex; gap: 10px; margin-bottom: 8px; flex-wrap: wrap;">
@@ -742,8 +827,13 @@
 
           <!-- 3. 검색키워드 (사용자가 자신에 대해 직접 5개까지 입력) -->
           <div class="form-group full-width">
-            <label for="keywordInput">
-              3. 검색키워드 - <span style="color: #60a5fa;" id="keywordCount">자신을 표현하는 대표 검색 키워드 (최대 5개) (0/5)</span><span class="req">*</span>
+            <label for="keywordInput" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;">
+              <span>3. 검색키워드 - <span style="color: #60a5fa;" id="keywordCount">자신을 표현하는 대표 검색 키워드 (최대 5개) (0/5)</span><span class="req">*</span>
+                <span class="help-wrap">
+                  <button type="button" class="help-btn" onclick="toggleHelp(event, 'help-sec3')" title="설명 보기">?</button>
+                  <span class="help-box" id="help-sec3">기업 고객이 어드바이저 검색 시 매칭될 수 있는 대표 핵심 역량 키워드를 등록합니다.</span>
+                </span>
+              </span>
             </label>
             <div style="display: flex; gap: 10px; margin-bottom: 10px;">
               <input type="text" id="keywordInput" placeholder="대표 검색 키워드를 입력하세요 (예: 토크노믹스, 아키텍처, VC투자, 데이터분석)..." onkeypress="if(event.key==='Enter'){event.preventDefault();addSearchKeyword();}">
@@ -758,7 +848,13 @@
 
           <!-- 4. 주요수행프로젝트 (프로젝트명 ; 간단 설명 ; 역할) -->
           <div class="form-group full-width">
-            <label>4. 주요수행프로젝트 (프로젝트명 ; 간단 설명 ; 역할)<span class="req">*</span></label>
+            <label style="display: flex; align-items: center;">
+              <span>4. 주요수행프로젝트 (프로젝트명 ; 간단 설명 ; 역할)<span class="req">*</span></span>
+              <span class="help-wrap">
+                <button type="button" class="help-btn" onclick="toggleHelp(event, 'help-sec4')" title="설명 보기">?</button>
+                <span class="help-box" id="help-sec4">과거 수행한 대표 프로젝트의 명칭, 간략 설명, 담당 역할을 상세히 입력합니다.</span>
+              </span>
+            </label>
             <div id="projectContainer">
               <div class="project-item">
                 <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
@@ -783,7 +879,13 @@
 
           <!-- 5. 경력 (총 경력 연차) -->
           <div class="form-group full-width" style="margin-top: 10px;">
-            <label for="years">5. 경력 (총 경력 연차)<span class="req">*</span></label>
+            <label for="years" style="display: flex; align-items: center;">
+              <span>5. 경력 (총 경력 연차)<span class="req">*</span></span>
+              <span class="help-wrap">
+                <button type="button" class="help-btn" onclick="toggleHelp(event, 'help-sec5')" title="설명 보기">?</button>
+                <span class="help-box" id="help-sec5">해당 전문 분야에서의 총 누적 실무 경력 연수를 숫자로 입력합니다.</span>
+              </span>
+            </label>
             <div style="display: flex; align-items: center; gap: 12px; max-width: 320px;">
               <input type="number" id="years" placeholder="예: 25 (10년 이상)" min="0" required style="flex: 1;">
               <span style="font-weight: 600; color: #cbd5e1; white-space: nowrap;">년</span>
@@ -1854,6 +1956,33 @@
         t.style.display = "none";
       }, 2500);
     }
+
+    // Help Tooltip Toggle Handler
+    function toggleHelp(event, boxId) {
+      event.preventDefault();
+      event.stopPropagation();
+      var targetBox = document.getElementById(boxId);
+      if (!targetBox) return;
+
+      var currentShow = targetBox.classList.contains('show');
+      
+      // Close all open help boxes first
+      document.querySelectorAll('.help-box').forEach(b => b.classList.remove('show'));
+      document.querySelectorAll('.help-btn').forEach(btn => btn.classList.remove('active'));
+
+      if (!currentShow) {
+        targetBox.classList.add('show');
+        event.currentTarget.classList.add('active');
+      }
+    }
+
+    // Close help tooltip when clicking anywhere outside
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.help-wrap')) {
+        document.querySelectorAll('.help-box').forEach(b => b.classList.remove('show'));
+        document.querySelectorAll('.help-btn').forEach(btn => btn.classList.remove('active'));
+      }
+    });
   </script>
 </body>
 </html>
