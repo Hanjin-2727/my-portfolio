@@ -956,7 +956,7 @@
         <div class="advisor-list" id="advisorList">
           
           <!-- Advisor Card 1 (IT / 25년) -->
-          <div class="advisor-card" data-domain="IT/SW" data-exp="25">
+          <div class="advisor-card" data-id="Adv-89F2" data-nickname="새벽공기" data-domain="IT/SW" data-exp="25">
             <div class="advisor-info">
               <h3>새벽공기 수석 어드바이저 <span style="font-size: 0.8rem; color: #94a3b8; font-weight: normal;">(Adv-89F2)</span> <span style="font-size: 0.85rem; color: #34d399; margin-left: 8px;">★ 4.9 (28건 평가)</span></h3>
               
@@ -983,7 +983,7 @@
           </div>
 
           <!-- Advisor Card 2 (금융 / 12년) -->
-          <div class="advisor-card" data-domain="Finance/Web3" data-exp="12">
+          <div class="advisor-card" data-id="Adv-71B3" data-nickname="푸른바다" data-domain="Finance/Web3" data-exp="12">
             <div class="advisor-info">
               <h3>푸른바다 전문 파트너 <span style="font-size: 0.8rem; color: #94a3b8; font-weight: normal;">(Adv-71B3)</span> <span style="font-size: 0.85rem; color: #34d399; margin-left: 8px;">★ 4.8 (15건 평가)</span></h3>
               
@@ -1009,21 +1009,22 @@
           </div>
 
           <!-- Advisor Card 3 (제조 / 18년) -->
-          <div class="advisor-card" data-domain="Semiconductor/Energy" data-exp="18">
+          <div class="advisor-card" data-id="Adv-55E8" data-nickname="솔바람" data-domain="Semiconductor/Energy" data-exp="18">
             <div class="advisor-info">
               <h3>솔바람 수석 연구위원 <span style="font-size: 0.8rem; color: #94a3b8; font-weight: normal;">(Adv-55E8)</span> <span style="font-size: 0.85rem; color: #34d399; margin-left: 8px;">★ 4.9 (42건 평가)</span></h3>
               
               <div class="layer-badges">
                 <span class="layer-badge lb-domain">1단: 제조 / 반도체 & 에너지</span>
-                <span class="layer-badge lb-dept">2단: #반도체공정 #지식그래프</span>
+                <span class="layer-badge lb-dept">2단: #반도체공정 #AI & 지식그래프</span>
                 <span class="layer-badge lb-exp">3단: 총 경력 18년</span>
               </div>
 
-              <p style="font-size: 0.85rem; color: #cbd5e1; margin-top: 6px;">대표 프로젝트: 차세대 반도체 공정 자동화 및 지식 그래프 기반 데이터 플랫폼</p>
+              <p style="font-size: 0.85rem; color: #cbd5e1; margin-top: 6px;">대표 프로젝트: 차세대 반도체 공정 자동화 및 지식 그래프 기반 AI 데이터 플랫폼</p>
               
               <div class="advisor-tags">
                 <span class="tag-chip">#Semiconductor</span>
                 <span class="tag-chip">#Database Architecture</span>
+                <span class="tag-chip">#AI & 지식그래프</span>
                 <span class="tag-chip">#R&D Lead</span>
               </div>
             </div>
@@ -1034,7 +1035,7 @@
           </div>
 
           <!-- Advisor Card 4 (운수업 / 32년) -->
-          <div class="advisor-card" data-domain="Logistics/Transport" data-exp="32">
+          <div class="advisor-card" data-id="Adv-33A1" data-nickname="은빛구름" data-domain="Logistics/Transport" data-exp="32">
             <div class="advisor-info">
               <h3>은빛구름 상임 고문 <span style="font-size: 0.8rem; color: #94a3b8; font-weight: normal;">(Adv-33A1)</span> <span style="font-size: 0.85rem; color: #34d399; margin-left: 8px;">★ 5.0 (53건 평가)</span></h3>
               
@@ -1059,7 +1060,7 @@
           </div>
 
           <!-- Advisor Card 5 (농업·어업 / 22년) -->
-          <div class="advisor-card" data-domain="Bio/Healthcare" data-exp="22">
+          <div class="advisor-card" data-id="Adv-99K4" data-nickname="청산유수" data-domain="Bio/Healthcare" data-exp="22">
             <div class="advisor-info">
               <h3>청산유수 최고 어드바이저 <span style="font-size: 0.8rem; color: #94a3b8; font-weight: normal;">(Adv-99K4)</span> <span style="font-size: 0.85rem; color: #34d399; margin-left: 8px;">★ 4.9 (31건 평가)</span></h3>
               
@@ -1685,12 +1686,24 @@
       if (document.getElementById("contractAdvShortId")) document.getElementById("contractAdvShortId").innerText = idData.shortId;
       if (document.getElementById("contractAdvContact")) document.getElementById("contractAdvContact").innerText = `${phone} / ${email}`;
 
-      // Dynamically Add New Advisor Card to Tab 2 Search Results List
+      // Dynamically Add/Update Advisor Card to Tab 2 Search Results List (Strict Deduplication)
       var advisorList = document.getElementById("advisorList");
       if (advisorList) {
+        // Remove any prior existing card with the same ShortID or same Nickname
+        var existingCards = advisorList.querySelectorAll(".advisor-card");
+        existingCards.forEach(card => {
+          var cid = card.getAttribute("data-id") || "";
+          var cnick = card.getAttribute("data-nickname") || "";
+          if (cid === idData.shortId || (cnick && cnick.toLowerCase() === nickname.toLowerCase())) {
+            card.remove(); // Remove previous duplicate
+          }
+        });
+
         var domainCategory = selectedCategoryList.join("/");
         var newCard = document.createElement("div");
         newCard.className = "advisor-card";
+        newCard.setAttribute("data-id", idData.shortId);
+        newCard.setAttribute("data-nickname", nickname);
         newCard.setAttribute("data-domain", domainCategory);
         newCard.setAttribute("data-exp", years);
         newCard.style.animation = "fadeIn 0.4s ease-in-out";
@@ -1735,8 +1748,42 @@
       showToast(`✨ 어드바이저 [${nickname}] (UUID: ${idData.shortId}) 등록 완료! 2단 검색 화면에 추가되었습니다.`);
     }
 
+    // Helper to check if card text matches query with smart token / acronym boundary detection
+    function matchSearchTerm(text, query) {
+      if (!query) return true;
+      var q = query.trim().toLowerCase();
+      if (!q) return true;
+
+      // For short acronyms / 2-letter search terms like 'ai', 'it', 'vc', 'ui', 'ux', 'ml', 'ds'
+      if (q.length <= 2) {
+        // Match word boundaries: e.g. " ai ", "#ai", "(ai)", "ai/", "/ai", "ai-", "ai," or Korean word boundaries
+        // Prevent false positives inside words like "blockchain", "domain", "email", "detail"
+        var escaped = q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        var regex = new RegExp('(^|[^a-zA-Z0-9가-힣])' + escaped + '([^a-zA-Z0-9가-힣]|$)', 'i');
+        return regex.test(text);
+      }
+
+      // For standard words, match substring
+      return text.includes(q);
+    }
+
     // 3-Layer Advisor Search & Filtering Logic (Layer 1: Domain, Layer 2: Keyword, Layer 3: Experience)
     function filterAdvisors(isButtonClick) {
+      var advisorList = document.getElementById("advisorList");
+      if (advisorList) {
+        // Automatic runtime deduplication: remove any duplicate cards sharing the same data-id
+        var seenIds = new Set();
+        var allCards = advisorList.querySelectorAll(".advisor-card");
+        allCards.forEach(card => {
+          var cid = card.getAttribute("data-id") || card.querySelector("h3")?.innerText.trim() || "";
+          if (cid && seenIds.has(cid)) {
+            card.remove();
+          } else if (cid) {
+            seenIds.add(cid);
+          }
+        });
+      }
+
       var domainFilter = document.getElementById("layerDomain").value;
       var keywordFilter = (document.getElementById("layerKeyword") ? document.getElementById("layerKeyword").value.trim().toLowerCase() : "");
       var minExp = parseInt(document.getElementById("layerExp").value) || 0;
@@ -1748,12 +1795,12 @@
       cards.forEach(card => {
         var cardDomain = card.getAttribute("data-domain") || "";
         var exp = parseInt(card.getAttribute("data-exp")) || 0;
-        var text = card.innerText.toLowerCase();
+        var text = (card.innerText || "").toLowerCase();
 
-        var matchDomain = (domainFilter === "all") || cardDomain.includes(domainFilter);
-        var matchKeyword = !keywordFilter || text.includes(keywordFilter);
+        var matchDomain = (domainFilter === "all") || cardDomain.toLowerCase().includes(domainFilter.toLowerCase());
+        var matchKeyword = !keywordFilter || matchSearchTerm(text, keywordFilter);
         var matchExp = exp >= minExp;
-        var matchQuery = !query || text.includes(query);
+        var matchQuery = !query || matchSearchTerm(text, query);
 
         if (matchDomain && matchKeyword && matchExp && matchQuery) {
           card.style.display = "flex";
