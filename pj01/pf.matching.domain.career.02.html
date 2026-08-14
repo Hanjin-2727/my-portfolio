@@ -607,10 +607,109 @@
         <div class="card-title">📝 어드바이저 도메인 경력 & 프로젝트 등록</div>
         <form id="advisorForm">
           
-          <!-- 1. 전문분야 (최대 3개 선택) -->
+          <!-- 1. 개인정보 (4-Factor 결합 해시 & UUID 생성) -->
+          <div class="form-group full-width" style="background: linear-gradient(135deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.95)); border: 1px solid rgba(99, 102, 241, 0.35); border-radius: 12px; padding: 22px; margin-bottom: 24px; box-shadow: 0 4px 16px rgba(0,0,0,0.25);">
+            
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 1.25rem;">🔐</span>
+                <h3 style="font-size: 1.05rem; color: #ffffff; margin: 0; font-weight: 700;">
+                  1. 개인정보 (Personal Information)
+                </h3>
+              </div>
+              <span style="font-size: 0.78rem; background: rgba(99, 102, 241, 0.2); color: #a5b4fc; border: 1px solid rgba(99, 102, 241, 0.4); padding: 4px 12px; border-radius: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px;">
+                <span>🔒</span> SHA-256 해시 기반 Unique UUID 자동 생성
+              </span>
+            </div>
+
+            <p style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 18px; line-height: 1.6;">
+              💡 <strong>[실명 + 모바일번호 + 닉네임 + 이메일주소]</strong> 4가지 고유 정보를 조합하여 <strong>전역 유니크(Unique) 해시 UUID</strong>를 자동 발급합니다.<br>
+              🔒 <strong>프라이버시 분리 원칙:</strong> 실명과 모바일번호는 시스템에 공개되지 않고 <strong>전자계약 체결 시에만 암호화</strong>되어 사용되며, 플랫폼 활동(검색, 상담, 평가)은 <strong>닉네임과 발급된 고유 UUID(Adv-XXXX)</strong>로만 안전하게 진행됩니다.
+            </p>
+
+            <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
+              
+              <!-- 1) 실명 -->
+              <div>
+                <label for="advRealName">
+                  이름 (실명, 실제사용하지 않고 계약에서만 사용)<span class="req">*</span>
+                </label>
+                <input type="text" id="advRealName" placeholder="예: 김철수 (법적 실명)" required oninput="generateAdvisorUUID()">
+                <span style="font-size: 0.76rem; color: #64748b; display: block; margin-top: 4px;">
+                  ※ 플랫폼 미노출, 전자계약 체결 및 에스크로 정산 시에만 사용
+                </span>
+              </div>
+
+              <!-- 2) 닉네임 -->
+              <div>
+                <label for="advNickname">
+                  닉네임 (시스템에서는 닉네임 사용)<span class="req">*</span>
+                </label>
+                <input type="text" id="advNickname" placeholder="예: 새벽공기, 테크마스터" required oninput="generateAdvisorUUID()">
+                <span style="font-size: 0.76rem; color: #64748b; display: block; margin-top: 4px;">
+                  ※ 프로필, 검색 화면, 1:1 상담 시 공식 표시되는 닉네임
+                </span>
+              </div>
+
+              <!-- 3) 이메일 -->
+              <div>
+                <label for="advEmail">
+                  이메일 (Email)<span class="req">*</span>
+                </label>
+                <input type="email" id="advEmail" placeholder="예: advisor.kim@domain.com" required oninput="generateAdvisorUUID()">
+                <span style="font-size: 0.76rem; color: #64748b; display: block; margin-top: 4px;">
+                  ※ 자문 요청 알림 및 공식 전자계약서 교부 수신용
+                </span>
+              </div>
+
+              <!-- 4) 모바일번호 -->
+              <div>
+                <label for="advPhone">
+                  모바일번호 (Mobile Phone)<span class="req">*</span>
+                </label>
+                <input type="text" id="advPhone" placeholder="예: 010-1234-5678" required oninput="generateAdvisorUUID()">
+                <span style="font-size: 0.76rem; color: #64748b; display: block; margin-top: 4px;">
+                  ※ 본인 인증 및 긴급 알림 전용 (화면 미노출)
+                </span>
+              </div>
+
+            </div>
+
+            <!-- 실시간 해시 & 고유 UUID 생성 결과 박스 -->
+            <div style="margin-top: 18px; padding: 14px 16px; background-color: rgba(15, 23, 42, 0.95); border: 1px dashed rgba(99, 102, 241, 0.45); border-radius: 8px;">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; flex-wrap: wrap; gap: 6px;">
+                <span style="font-size: 0.85rem; font-weight: 700; color: #c7d2fe; display: flex; align-items: center; gap: 6px;">
+                  <span>⚡ 4-Factor 결합 해시 & 발급된 고유 UUID</span>
+                </span>
+                <span id="uuidStatusBadge" style="font-size: 0.75rem; padding: 2px 8px; border-radius: 6px; background: rgba(148, 163, 184, 0.2); color: #94a3b8;">
+                  정보 입력 대기 중
+                </span>
+              </div>
+
+              <!-- 결합 원본 스트링 미리보기 -->
+              <div style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 8px; font-family: monospace; word-break: break-all;">
+                <span style="color: #64748b;">결합 원본 문자열(Raw):</span> <span id="rawCombinedText" style="color: #cbd5e1;">(실명 + 모바일번호 + 닉네임 + 이메일주소)</span>
+              </div>
+
+              <!-- 생성된 UUID 및 단축 ID -->
+              <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap; background: rgba(0, 0, 0, 0.35); padding: 10px 14px; border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.05);">
+                <div style="flex: 1; min-width: 260px;">
+                  <span style="font-size: 0.75rem; color: #818cf8; font-weight: 600; display: block; margin-bottom: 2px;">생성된 고유 UUID (Unique UUID v5):</span>
+                  <code id="generatedUUID" style="font-size: 0.95rem; color: #38bdf8; font-weight: bold; letter-spacing: 0.5px;">-</code>
+                </div>
+                <div style="border-left: 1px solid rgba(255, 255, 255, 0.1); padding-left: 14px;">
+                  <span style="font-size: 0.75rem; color: #34d399; font-weight: 600; display: block; margin-bottom: 2px;">시스템 단축 식별코드:</span>
+                  <code id="generatedShortId" style="font-size: 0.95rem; color: #34d399; font-weight: bold;">-</code>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          
+          <!-- 2. 전문분야 (최대 3개 선택) -->
           <div class="form-group full-width">
             <label for="mainIndustrySelect">
-              1. 전문분야 (Sector) - <span style="color: #60a5fa;" id="categoryCount">최대 3개까지 선택 가능 (0/3)</span><span class="req">*</span>
+              2. 전문분야 (Sector) - <span style="color: #60a5fa;" id="categoryCount">최대 3개까지 선택 가능 (0/3)</span><span class="req">*</span>
             </label>
             
             <div style="display: flex; gap: 10px; margin-bottom: 8px; flex-wrap: wrap;">
@@ -641,10 +740,10 @@
             </div>
           </div>
 
-          <!-- 2. 검색 키워드 (사용자가 자신에 대해 직접 5개까지 입력) -->
+          <!-- 3. 검색키워드 (사용자가 자신에 대해 직접 5개까지 입력) -->
           <div class="form-group full-width">
             <label for="keywordInput">
-              2. 검색 키워드 - <span style="color: #60a5fa;" id="keywordCount">자신을 표현하는 대표 검색 키워드 (최대 5개) (0/5)</span><span class="req">*</span>
+              3. 검색키워드 - <span style="color: #60a5fa;" id="keywordCount">자신을 표현하는 대표 검색 키워드 (최대 5개) (0/5)</span><span class="req">*</span>
             </label>
             <div style="display: flex; gap: 10px; margin-bottom: 10px;">
               <input type="text" id="keywordInput" placeholder="대표 검색 키워드를 입력하세요 (예: 토크노믹스, 아키텍처, VC투자, 데이터분석)..." onkeypress="if(event.key==='Enter'){event.preventDefault();addSearchKeyword();}">
@@ -657,9 +756,9 @@
             </div>
           </div>
 
-          <!-- 3. 주요 수행 프로젝트 (프로젝트명 ; 간단 설명 ; 역할) -->
+          <!-- 4. 주요수행프로젝트 (프로젝트명 ; 간단 설명 ; 역할) -->
           <div class="form-group full-width">
-            <label>3. 주요 수행 프로젝트 (프로젝트명 ; 간단 설명 ; 역할)<span class="req">*</span></label>
+            <label>4. 주요수행프로젝트 (프로젝트명 ; 간단 설명 ; 역할)<span class="req">*</span></label>
             <div id="projectContainer">
               <div class="project-item">
                 <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
@@ -682,9 +781,9 @@
             <button type="button" class="btn-add-proj" onclick="addProjectField()">+ 프로젝트 추가하기</button>
           </div>
 
-          <!-- 4. 총 경력 연차 (Years of Experience) -->
+          <!-- 5. 경력 (총 경력 연차) -->
           <div class="form-group full-width" style="margin-top: 10px;">
-            <label for="years">4. 총 경력 연차 (Years of Experience)<span class="req">*</span></label>
+            <label for="years">5. 경력 (총 경력 연차)<span class="req">*</span></label>
             <div style="display: flex; align-items: center; gap: 12px; max-width: 320px;">
               <input type="number" id="years" placeholder="예: 25 (10년 이상)" min="0" required style="flex: 1;">
               <span style="font-weight: 600; color: #cbd5e1; white-space: nowrap;">년</span>
@@ -973,6 +1072,39 @@
         <div class="card-title">📑 스마트 전자 계약서 작성 (표준계약서 + 특수계약항목)</div>
         
         <div style="background-color: #0f172a; border: 1px solid var(--card-border); padding: 22px; border-radius: 12px; margin-bottom: 20px;">
+          
+          <!-- 계약 당사자 식별 정보 (실명/연락처는 계약서에서만 확인) -->
+          <div style="background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.95)); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: 10px; padding: 16px 20px; margin-bottom: 20px;">
+            <h5 style="color: #93c5fd; font-size: 0.95rem; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+              <span>👤 계약 체결 당사자 정보 (프라이버시 분리 검증)</span>
+              <span style="font-size: 0.75rem; background: rgba(52, 211, 153, 0.15); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.3); padding: 3px 10px; border-radius: 6px; font-weight: 600;">
+                ✓ 법적 실명 서명 적용 (시스템 미공개)
+              </span>
+            </h5>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; font-size: 0.86rem;">
+              <div style="background: rgba(0,0,0,0.25); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+                <span style="color: #94a3b8; display: block; margin-bottom: 4px; font-weight: 600;">[갑] 자문 의뢰 발주처 (고객사):</span>
+                <strong style="color: #ffffff;">(주)테크솔루션앤파트너스</strong>
+                <div style="color: #64748b; font-size: 0.78rem; margin-top: 2px;">사업자등록번호: 120-88-92813 | 대표: 홍원택</div>
+              </div>
+              <div style="background: rgba(0,0,0,0.25); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+                <span style="color: #94a3b8; display: block; margin-bottom: 4px; font-weight: 600;">[을] 자문 제공자 (어드바이저):</span>
+                <div>
+                  <strong style="color: #ffffff;" id="contractAdvRealName">김철수</strong> 
+                  <span style="color: #f87171; font-size: 0.76rem; font-weight: 600;">[🔒 법적 실명]</span>
+                  <span style="color: #94a3b8; margin: 0 4px;">/</span>
+                  <span style="color: #34d399; font-weight: 600;" id="contractAdvNickname">새벽공기 수석 어드바이저</span>
+                </div>
+                <div style="margin-top: 4px; font-family: monospace; font-size: 0.78rem; color: #38bdf8; word-break: break-all;">
+                  UUID: <span id="contractAdvUUID">6059dc9c-a2e2-5dfb-bb0b-db398d0b7b1d</span> (<span id="contractAdvShortId">Adv-6059</span>)
+                </div>
+                <div style="margin-top: 2px; color: #cbd5e1; font-size: 0.78rem;">
+                  연락처/이메일: <span id="contractAdvContact">010-1234-5678 / advisor.kim@domain.com</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <h4 style="color: #60a5fa; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
             <span>📌 표준 계약서 (일반 계약 항목)</span>
           </h4>
@@ -1000,6 +1132,26 @@
             <h5 style="color: #c4b5fd; margin-bottom: 6px; font-size: 0.95rem;">🤖 AI 법률 어드바이저 검토 및 완성된 특수조항 &lt;1&gt;:</h5>
             <p id="aiLegalText" style="font-size: 0.88rem; color: #e9d5ff; line-height: 1.6;"></p>
           </div>
+
+          <!-- Final Signed Contract Result Display Box -->
+          <div id="finalContractResult" style="display: none; margin-top: 20px; padding: 20px; background-color: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.4); border-radius: 10px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+              <span style="font-size: 1rem; font-weight: 700; color: #34d399; display: flex; align-items: center; gap: 6px;">
+                <span>✅</span> 스마트 전자계약 체결 완료 및 에스크로 예치 증명서
+              </span>
+              <span style="font-size: 0.78rem; background: #065f46; color: #a7f3d0; padding: 3px 8px; border-radius: 4px; font-weight: 600;">
+                서명 검증 완료 (Verified)
+              </span>
+            </div>
+            <div style="font-size: 0.85rem; color: #cbd5e1; line-height: 1.7;">
+              • <strong>계약 번호:</strong> <code style="color: #38bdf8;" id="signedContractId">SC-20260814-7A9B</code><br>
+              • <strong>서명자 (자문인 실명):</strong> <span id="signedAdvRealName">김철수</span> (고유 UUID: <code id="signedAdvUUID" style="color:#a5b4fc;">6059dc9c-a2e2-5dfb-bb0b-db398d0b7b1d</code>)<br>
+              • <strong>활동 닉네임:</strong> <span id="signedAdvNickname">새벽공기 수석 어드바이저</span><br>
+              • <strong>에스크로 예치 상태:</strong> <span style="color: #34d399; font-weight: 600;">자문료 100% 안전 예치 완료 (안심 정산 락업 적용)</span><br>
+              • <strong>해시 서명 무결성:</strong> <span style="color: #93c5fd;">SHA-256 전자서명 유효 확인 됨 ✓</span>
+            </div>
+          </div>
+
         </div>
       </div>
 
@@ -1211,13 +1363,274 @@
       container.appendChild(newItem);
     }
 
-    // Form Submission
-    function submitForm() {
-      if (selectedCategoryList.length === 0) {
-        alert("전문 분야를 최소 1개 이상 선택해 주세요 (최대 5개).");
+    // Current Registered Advisor State (Privacy-preserving Profile)
+    var currentAdvisorProfile = {
+      realName: "김철수",
+      nickname: "새벽공기 수석 어드바이저",
+      email: "advisor.kim@domain.com",
+      phone: "010-1234-5678",
+      uuid: "6059dc9c-a2e2-5dfb-bb0b-db398d0b7b1d",
+      shortId: "Adv-6059"
+    };
+
+    // SHA-256 Hash Function (Native Crypto with Fallback)
+    async function computeSHA256Hex(str) {
+      if (window.crypto && crypto.subtle) {
+        try {
+          const encoder = new TextEncoder();
+          const data = encoder.encode(str);
+          const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+          const hashArray = Array.from(new Uint8Array(hashBuffer));
+          return hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
+        } catch (e) {
+          console.warn("crypto.subtle error, falling back to sync sha256:", e);
+        }
+      }
+      return syncSHA256(str);
+    }
+
+    // Synchronous SHA-256 Implementation
+    function syncSHA256(ascii) {
+      function rightRotate(value, amount) { return (value >>> amount) | (value << (32 - amount)); }
+      var words = [];
+      var utf8 = unescape(encodeURIComponent(ascii));
+      var utf8Len = utf8.length;
+      for (var i = 0; i < utf8Len; i++) {
+        words[i >> 2] |= (utf8.charCodeAt(i) & 255) << (24 - (i % 4) * 8);
+      }
+      words[utf8Len >> 2] |= 128 << (24 - (utf8Len % 4) * 8);
+      words[(((utf8Len + 8) >> 6) + 1) * 16 - 1] = utf8Len * 8;
+
+      var hash = [1779033703, 3144134277, 1013904242, 2773480762, 1359893119, 2600822924, 528734635, 1541459225];
+      var k = [
+        1116352408, 1899447441, 3049323471, 3921009573, 961987163, 1508970993, 2453635748, 2870763221,
+        3624381080, 310598401, 607225278, 1426881987, 1925078388, 2162078206, 2614888103, 3248222580,
+        3835390401, 4022224774, 264347078, 604807628, 770255983, 1249150122, 1555081692, 1996064986,
+        2554220882, 2821834349, 2952996808, 3210313671, 3336571891, 3584528711, 113926993, 338241895,
+        666307205, 773529790, 1294757372, 1396182291, 1695183700, 1986661051, 2177026350, 2456956037,
+        2508210074, 2656484966, 2887071658, 3006245491, 3291244443, 3391569614, 3575809903, 3865272997,
+        4004554196, 50917049, 322821860, 698297478, 881646729, 1083797291, 1309151649, 1488809994,
+        1740746414, 1840854661, 2024104815, 2341262744, 2478459119, 2694101275, 2730485297, 2829218661
+      ];
+
+      var w = [];
+      for (var i = 0; i < words.length; i += 16) {
+        var a = hash[0], b = hash[1], c = hash[2], d = hash[3],
+            e = hash[4], f = hash[5], g = hash[6], h = hash[7];
+
+        for (var j = 0; j < 64; j++) {
+          if (j < 16) w[j] = words[i + j] | 0;
+          else {
+            var gamma0 = rightRotate(w[j - 15], 7) ^ rightRotate(w[j - 15], 18) ^ (w[j - 15] >>> 3);
+            var gamma1 = rightRotate(w[j - 2], 17) ^ rightRotate(w[j - 2], 19) ^ (w[j - 2] >>> 10);
+            w[j] = (w[j - 16] + gamma0 + w[j - 7] + gamma1) | 0;
+          }
+
+          var s1 = rightRotate(e, 6) ^ rightRotate(e, 11) ^ rightRotate(e, 25);
+          var ch = (e & f) ^ ((~e) & g);
+          var temp1 = (h + s1 + ch + k[j] + w[j]) | 0;
+          var s0 = rightRotate(a, 2) ^ rightRotate(a, 13) ^ rightRotate(a, 22);
+          var maj = (a & b) ^ (a & c) ^ (b & c);
+          var temp2 = (s0 + maj) | 0;
+
+          h = g; g = f; f = e; e = (d + temp1) | 0;
+          d = c; c = b; b = a; a = (temp1 + temp2) | 0;
+        }
+
+        hash[0] = (hash[0] + a) | 0;
+        hash[1] = (hash[1] + b) | 0;
+        hash[2] = (hash[2] + c) | 0;
+        hash[3] = (hash[3] + d) | 0;
+        hash[4] = (hash[4] + e) | 0;
+        hash[5] = (hash[5] + f) | 0;
+        hash[6] = (hash[6] + g) | 0;
+        hash[7] = (hash[7] + h) | 0;
+      }
+
+      var result = "";
+      for (var i = 0; i < 8; i++) {
+        for (var j = 3; j >= 0; j--) {
+          var byteVal = (hash[i] >> (8 * j)) & 255;
+          result += (byteVal < 16 ? "0" : "") + byteVal.toString(16);
+        }
+      }
+      return result;
+    }
+
+    // Real-time UUID Generator from '실명 + 모바일번호 + 닉네임 + 이메일주소'
+    async function generateAdvisorUUID() {
+      var realName = (document.getElementById("advRealName") ? document.getElementById("advRealName").value.trim() : "");
+      var nickname = (document.getElementById("advNickname") ? document.getElementById("advNickname").value.trim() : "");
+      var email = (document.getElementById("advEmail") ? document.getElementById("advEmail").value.trim() : "");
+      var phone = (document.getElementById("advPhone") ? document.getElementById("advPhone").value.trim() : "");
+
+      var rawDisplay = document.getElementById("rawCombinedText");
+      var uuidDisplay = document.getElementById("generatedUUID");
+      var shortIdDisplay = document.getElementById("generatedShortId");
+      var statusBadge = document.getElementById("uuidStatusBadge");
+
+      if (!realName && !nickname && !email && !phone) {
+        if (rawDisplay) rawDisplay.innerText = "(실명 + 모바일번호 + 닉네임 + 이메일주소)";
+        if (uuidDisplay) uuidDisplay.innerText = "-";
+        if (shortIdDisplay) shortIdDisplay.innerText = "-";
+        if (statusBadge) {
+          statusBadge.innerText = "정보 입력 대기 중";
+          statusBadge.style.background = "rgba(148, 163, 184, 0.2)";
+          statusBadge.style.color = "#94a3b8";
+        }
+        return null;
+      }
+
+      // Concatenate in canonical format: [실명] + [모바일번호] + [닉네임] + [이메일주소]
+      var rawString = `${realName}#${phone}#${nickname}#${email}`;
+      if (rawDisplay) rawDisplay.innerText = rawString;
+
+      var hashHex = await computeSHA256Hex(rawString);
+
+      // Formulate UUIDv5 format (8-4-4-4-12)
+      var part1 = hashHex.substring(0, 8);
+      var part2 = hashHex.substring(8, 12);
+      var part3 = "5" + hashHex.substring(13, 16);
+      var variant = ((parseInt(hashHex.substring(16, 18), 16) & 0x3f) | 0x80).toString(16).padStart(2, "0");
+      var part4 = variant + hashHex.substring(18, 20);
+      var part5 = hashHex.substring(20, 32);
+
+      var uuid = `${part1}-${part2}-${part3}-${part4}-${part5}`;
+      var shortId = "Adv-" + part1.substring(0, 4).toUpperCase();
+
+      if (uuidDisplay) uuidDisplay.innerText = uuid;
+      if (shortIdDisplay) shortIdDisplay.innerText = shortId;
+
+      if (statusBadge) {
+        if (realName && nickname && email && phone) {
+          statusBadge.innerText = "✓ 고유 UUID 생성 완료 (Unique Validated)";
+          statusBadge.style.background = "rgba(16, 185, 129, 0.25)";
+          statusBadge.style.color = "#34d399";
+        } else {
+          statusBadge.innerText = "입력 진행 중 (실시간 해싱)";
+          statusBadge.style.background = "rgba(59, 130, 246, 0.25)";
+          statusBadge.style.color = "#93c5fd";
+        }
+      }
+
+      return { uuid, shortId, rawString, realName, nickname, email, phone };
+    }
+
+    // Form Submission & Dynamic Registration
+    async function submitForm() {
+      var realName = document.getElementById("advRealName") ? document.getElementById("advRealName").value.trim() : "";
+      var nickname = document.getElementById("advNickname") ? document.getElementById("advNickname").value.trim() : "";
+      var email = document.getElementById("advEmail") ? document.getElementById("advEmail").value.trim() : "";
+      var phone = document.getElementById("advPhone") ? document.getElementById("advPhone").value.trim() : "";
+
+      if (!realName) {
+        alert("실명을 입력해 주세요 (계약 시에만 법적 효력으로 사용).");
+        document.getElementById("advRealName").focus();
         return;
       }
-      showToast("어드바이저 전문 분야 (" + selectedCategoryList.length + "개) 및 프로젝트 프로필이 성공적으로 저장되었습니다!");
+      if (!nickname) {
+        alert("시스템에서 활동할 닉네임을 입력해 주세요.");
+        document.getElementById("advNickname").focus();
+        return;
+      }
+      if (!email) {
+        alert("이메일 주소를 입력해 주세요.");
+        document.getElementById("advEmail").focus();
+        return;
+      }
+      if (!phone) {
+        alert("모바일 번호를 입력해 주세요.");
+        document.getElementById("advPhone").focus();
+        return;
+      }
+
+      if (selectedCategoryList.length === 0) {
+        alert("전문 분야를 최소 1개 이상 선택해 주세요 (최대 3개).");
+        return;
+      }
+
+      if (selectedKeywordList.length === 0) {
+        alert("검색 키워드를 최소 1개 이상 등록해 주세요 (최대 5개).");
+        return;
+      }
+
+      var projNameInput = document.querySelector(".proj-name");
+      var projDescInput = document.querySelector(".proj-desc");
+      var projRoleInput = document.querySelector(".proj-role");
+      var projName = (projNameInput && projNameInput.value.trim()) ? projNameInput.value.trim() : "차세대 도메인 아키텍처 설계 및 자문";
+      var projDesc = (projDescInput && projDescInput.value.trim()) ? projDescInput.value.trim() : "분산 시스템 및 도메인 비즈니스 로직 최적화";
+      var projRole = (projRoleInput && projRoleInput.value.trim()) ? projRoleInput.value.trim() : "총괄 수석 어드바이저";
+
+      var years = parseInt(document.getElementById("years").value) || 15;
+
+      // Compute Deterministic UUID
+      var idData = await generateAdvisorUUID();
+      if (!idData) return;
+
+      currentAdvisorProfile = {
+        realName: realName,
+        nickname: nickname,
+        email: email,
+        phone: phone,
+        uuid: idData.uuid,
+        shortId: idData.shortId
+      };
+
+      // Reflect in Tab 5 (Smart Contract Party Info)
+      if (document.getElementById("contractAdvRealName")) document.getElementById("contractAdvRealName").innerText = realName;
+      if (document.getElementById("contractAdvNickname")) document.getElementById("contractAdvNickname").innerText = nickname + " 수석 어드바이저";
+      if (document.getElementById("contractAdvUUID")) document.getElementById("contractAdvUUID").innerText = idData.uuid;
+      if (document.getElementById("contractAdvShortId")) document.getElementById("contractAdvShortId").innerText = idData.shortId;
+      if (document.getElementById("contractAdvContact")) document.getElementById("contractAdvContact").innerText = `${phone} / ${email}`;
+
+      // Dynamically Add New Advisor Card to Tab 2 Search Results List
+      var advisorList = document.getElementById("advisorList");
+      if (advisorList) {
+        var domainCategory = selectedCategoryList.join("/");
+        var newCard = document.createElement("div");
+        newCard.className = "advisor-card";
+        newCard.setAttribute("data-domain", domainCategory);
+        newCard.setAttribute("data-exp", years);
+        newCard.style.animation = "fadeIn 0.4s ease-in-out";
+        newCard.style.border = "1px solid rgba(52, 211, 153, 0.4)";
+        newCard.style.background = "linear-gradient(135deg, rgba(15, 23, 42, 0.8), rgba(6, 78, 59, 0.2))";
+
+        var keywordBadges = selectedKeywordList.map(k => `<span class="tag-chip">#${k}</span>`).join(" ");
+        var categoryBadges = selectedCategoryList.map(c => `<span class="layer-badge lb-domain">1단: ${c}</span>`).join(" ");
+
+        newCard.innerHTML = `
+          <div class="advisor-info">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+              <span style="background:#10b981; color:#ffffff; font-size:0.7rem; font-weight:bold; padding:2px 6px; border-radius:4px;">NEW 등록</span>
+              <h3 style="margin:0;">${nickname} 수석 어드바이저 <span style="font-size: 0.8rem; color: #94a3b8; font-weight: normal;">(${idData.shortId})</span> <span style="font-size: 0.85rem; color: #34d399; margin-left: 8px;">★ 5.0 (신규 등록)</span></h3>
+            </div>
+            
+            <div class="layer-badges">
+              ${categoryBadges}
+              <span class="layer-badge lb-dept">2단: ${selectedKeywordList.map(k => '#' + k).join(' ')}</span>
+              <span class="layer-badge lb-exp">3단: 총 경력 ${years}년</span>
+            </div>
+
+            <p style="font-size: 0.85rem; color: #cbd5e1; margin-top: 6px;">대표 프로젝트: ${projName} (${projRole})</p>
+            <p style="font-size: 0.8rem; color: #94a3b8; margin-top: 2px;">${projDesc}</p>
+            
+            <div class="advisor-tags">
+              ${keywordBadges}
+            </div>
+          </div>
+          <div class="advisor-actions">
+            <button class="btn-action-msg" onclick="startComm('${nickname} 수석 어드바이저', 'msg')">💬 메시지</button>
+            <button class="btn-action-call" onclick="startComm('${nickname} 수석 어드바이저', 'call')">📞 컨퍼런스 콜</button>
+          </div>
+        `;
+        advisorList.prepend(newCard);
+
+        // Update Counter
+        var countEl = document.getElementById("matchedAdvisorCount");
+        if (countEl) countEl.innerText = document.querySelectorAll(".advisor-card").length;
+      }
+
+      showToast(`✨ 어드바이저 [${nickname}] (UUID: ${idData.shortId}) 등록 완료! 2단 검색 화면에 추가되었습니다.`);
     }
 
     // 3-Layer Advisor Search & Filtering Logic (Layer 1: Domain, Layer 2: Keyword, Layer 3: Experience)
@@ -1286,7 +1699,7 @@
 
       setTimeout(function() {
         textEl.innerHTML = "<strong>[제14조 특수합의 조항 (AI 정제완료)]</strong><br/>" +
-          "1. 자문 제공자(Adv-89F2)가 본 계약에 의하여 고객사에 제공하는 자문 결과물 및 도면/소스코드의 지식재산권은 에스크로 자문료 최종 정산 시 고객사에 완전 귀속된다.<br/>" +
+          "1. 자문 제공자(" + currentAdvisorProfile.shortId + ")가 본 계약에 의하여 고객사에 제공하는 자문 결과물 및 도면/소스코드의 지식재산권은 에스크로 자문료 최종 정산 시 고객사에 완전 귀속된다.<br/>" +
           "2. 자문 완료 후 3개월 이내 발생한 과업 범위 내 기술 문의에 대하여 2회에 한해 추가 무상 서면 자문을 이행한다.<br/>" +
           "<span style='color:#34d399; font-weight:600;'>✓ AI 검토 의견: 표준계약서 무효 조항과의 충돌이 없으며 법적으로 안전한 특수조항으로 검토 및 반영되었습니다.</span>";
         showToast("AI 법률 어드바이저 리뷰가 완료되었습니다!");
@@ -1294,6 +1707,19 @@
     }
 
     function createContract() {
+      var outputBox = document.getElementById("finalContractResult");
+      if (outputBox) {
+        outputBox.style.display = "block";
+        if (document.getElementById("signedAdvRealName")) {
+          document.getElementById("signedAdvRealName").innerText = currentAdvisorProfile.realName;
+        }
+        if (document.getElementById("signedAdvUUID")) {
+          document.getElementById("signedAdvUUID").innerText = currentAdvisorProfile.uuid;
+        }
+        if (document.getElementById("signedAdvNickname")) {
+          document.getElementById("signedAdvNickname").innerText = currentAdvisorProfile.nickname;
+        }
+      }
       showToast("스마트 전자계약서가 최종 체결되었으며 자문료 에스크로 예치가 완료되었습니다!");
     }
 
